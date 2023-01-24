@@ -1,5 +1,5 @@
 require('dotenv').config()
-
+const path = require("path")
 const fs = require('fs');
 
 // Imports the CLoud Media Translation client library
@@ -14,10 +14,10 @@ async function translate_from_file() {
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
-  // const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
-  // const encoding = 'Encoding of the audio file, e.g. LINEAR16';
-  // const sourceLanguage = 'BCP-47 source language code, e.g. en-US';
-  // const targetLanguage = 'BCP-47 target language code, e.g. es-ES';
+  const filename = path.join(__dirname, './male.wav');
+  const encoding = '.wav';
+  const sourceLanguage = 'en-US';
+  const targetLanguage = 'es-419';
 
   const config = {
     audioConfig: {
@@ -72,3 +72,6 @@ async function translate_from_file() {
     }
   })
 }
+
+console.log("definitions complete")
+translate_from_file()
