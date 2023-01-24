@@ -1,7 +1,7 @@
 'use strict'
 const router = require('express').Router()
 
-router.use('/users', require('./users'))
+router.use('/translate', require('./translate'))
 // router.use('/posts', require('./posts'))
 
 

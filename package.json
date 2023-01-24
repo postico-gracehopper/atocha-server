@@ -11,7 +11,8 @@
   "main": "\"./server/index.js\"",
   "devDependencies": {},
   "scripts": {
-    "test": "npm run test"
+    "test": "npm run test",
+    "start:dev": "nodemon server --ignore public --ignore client"
   },
   "repository": {
     "type": "git",
