@@ -4,5 +4,23 @@
     "morgan": "^1.10.0",
     "pg": "^8.8.0",
     "sequelize": "^6.28.0"
-  }
+  },
+  "name": "atocha-server",
+  "description": "A backend for the Atocha app",
+  "version": "1.0.0",
+  "main": "\"./server/index.js\"",
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/postico-gracehopper/atocha-server.git"
+  },
+  "author": "fullstack students - team postico",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/postico-gracehopper/atocha-server/issues"
+  },
+  "homepage": "https://github.com/postico-gracehopper/atocha-server#readme"
 }
