@@ -1,5 +1,9 @@
 node_modules
 package-lock.json
+
 .env
+
+./postico-atocha-googlekey.json
 postico-atocha-googlekey.json
 *postico-atocha-googlekey.json
+postico-atocha-googlekey.json
