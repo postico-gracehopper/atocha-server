@@ -12,7 +12,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "npm run test",
-    "start:dev": "nodemon server --ignore public --ignore client"
+    "start": "node server --ignore public",
+    "start:dev": "nodemon server --ignore public"
   },
   "repository": {
     "type": "git",
