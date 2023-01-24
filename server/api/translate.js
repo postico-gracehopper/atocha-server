@@ -6,7 +6,22 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     const  { audioToTranslate } = req.body
-    res.json("")
+    // req.user
+    const { languageFrom } = req.user
+
+    const config = {
+        languageFrom: "en",
+        languageTo: "es",
+        apiKey: process.env.GOOGLE_API_KEY
+    }
+    // send to Google api
+    // const data = google.response
+    // 
+    // res.json(
+    //     {
+    //         textReponse: "a;sldkfj;owiejrfo "
+    //     }
+    // )
 })
 
 module.exports = router
