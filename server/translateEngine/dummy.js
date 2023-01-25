@@ -1,0 +1,61 @@
+const defaultConfig = require("./defaultConfig")
+
+function dummyTranslate(audioFile, tConfig=defaultConfig){
+    const index = Math.floor(Math.random() * dummySentences.length)
+    return dummySentences[index]
+}
+
+let dummySentences = [
+    'The rain pelted the windshield as the darkness engulfed us.',
+    'The Great Dane looked more like a horse than a dog.',
+    'Peanuts don\'t grow on trees, but cashews do.',
+    'The fox in the tophat whispered into the ear of the rabbit.',
+    'I really want to go to work, but I am too sick to drive.',
+    'You can\'t compare apples and oranges, but what about bananas and plantains?',
+    'Giving directions that the mountains are to the west only works when you can see them.',
+    'Everyone says they love nature until they realize how dangerous she can be.',
+    'Chocolate covered crickets were his favorite snack.',
+    'She had a difficult time owning up to her own crazy self.',
+    'Jason didn’t understand why his parents wouldn’t let him sell his little sister at the garage sale.',
+    'The blinking lights of the antenna tower came into focus just as I heard a loud snap.',
+    'The fifty mannequin heads floating in the pool kind of freaked them out.',
+    'It was the first time he had ever seen someone cook dinner on an elephant.',
+    'He turned in the research paper on Friday; otherwise, he would have not passed the class.',
+    'The sight of his goatee made me want to run and hide under my sister-in-law\'s bed.',
+    'Nobody questions who built the pyramids in Mexico.',
+    'She insisted that cleaning out your closet was the key to good driving.',
+    'The anaconda was the greatest criminal mastermind in this part of the neighborhood.',
+    'She did a happy dance because all of the socks from the dryer matched.',
+    'Joe made the sugar cookies; Susan decorated them.',
+    'Green should have smelled more tranquil, but somehow it just tasted rotten.',
+    'Truth in advertising and dinosaurs with skateboards have much in common.',
+    'Blue sounded too cold at the time and yet it seemed to work for gin.',
+    'Lucifer was surprised at the amount of life at Death Valley.',
+    'Situps are a terrible way to end your day.',
+    'Shakespeare was a famous 17th-century diesel mechanic.',
+    'On each full moon',
+    'The sign said there was road work ahead so he decided to speed up.',
+    'The shooter says goodbye to his love.',
+    'On a scale from one to ten, what\'s your favorite flavor of random grammar?',
+    'Poison ivy grew through the fence they said was impenetrable.',
+    'The clock within this blog and the clock on my laptop are 1 hour different from each other.',
+    'Jenny made the announcement that her baby was an alien.',
+    'His mind was blown that there was nothing in space except space itself.',
+    'The tumbleweed refused to tumble but was more than willing to prance.',
+    'It was difficult for Mary to admit that most of her workout consisted of exercising poor judgment.',
+    'The two walked down the slot canyon oblivious to the sound of thunder in the distance.',
+    'As she walked along the street and looked in the gutter, she realized facemasks had become the new cigarette butts.',
+    'Various sea birds are elegant, but nothing is as elegant as a gliding pelican.',
+    'He liked to play with words in the bathtub.',
+    'The irony of the situation wasn\'t lost on anyone in the room.',
+    'It didn\'t take long for Gary to detect the robbers were amateurs.',
+    'I am counting my calories, yet I really want dessert.',
+    'Improve your goldfish\'s physical fitness by getting him a bicycle.',
+    'I covered my friend in baby oil.',
+    'As the asteroid hurtled toward earth, Becky was upset her dentist appointment had been canceled.',
+    'You\'re unsure whether or not to trust him, but very thankful that you wore a turtle neck.',
+    'He was an introvert that extroverts seemed to love.',
+    'He appeared to be confusingly perplexed.',
+]
+
+module.exports = dummyTranslate

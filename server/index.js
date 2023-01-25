@@ -20,4 +20,11 @@ app.use("*", (req, res) => {
 });
 
 
+// Error handling END - WEAR
+app.use((err, req, res, next) => {
+  //console.log(`ERROR: Request: ${req.path}, Received: ${err.status} ${err.message.slice(0,30)}`)
+  res.status(err.status || 500).send(err.message || 'Internal server error.')
+})
+
+
 app.listen(port, ()=> console.log(`listening on port ${port}`));

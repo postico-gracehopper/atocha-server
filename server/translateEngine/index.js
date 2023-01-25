@@ -1,8 +1,11 @@
 const googleAPI = require("./google")
+const dummy = require("./dummy")
 
 
-const translateMapping = {
+const translator = {
     google: googleAPI,
+    dummy: dummy,
 }
 
-module.exports = translateMapping
+
+module.exports = translator

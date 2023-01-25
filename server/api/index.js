@@ -6,8 +6,10 @@ router.use('/translate', require('./translate'))
 
 
 // catch all errors from the api
-router.use((err, req, res, next) => {
-  res.status(400).send({message: err.message})
-})
+router.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
+});
 
 module.exports = router
