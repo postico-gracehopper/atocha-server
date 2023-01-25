@@ -3,7 +3,7 @@ FROM node:16
 RUN apt-get update && \
     apt-get install -y python3 && \
     rm -rf /var/lib/apt/lists/* && 
-    python get-pip.py
+    
 
 WORKDIR /usr/src/app
 
