@@ -1,11 +1,11 @@
 'use strict'
 const router = require('express').Router()
+// const { spawn } = require("node:child_process")
 
 router.use('/translate', require('./translate'))
-// router.use('/posts', require('./posts'))
+router.use('/checkDocker', require('./checkDocker'))
 
-
-// catch all errors from the api
+// catch all the Not Found's from the api
 router.use((req, res, next) => {
   const error = new Error('Not Found');
   error.status = 404;
