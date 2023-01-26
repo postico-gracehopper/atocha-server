@@ -1,49 +1,48 @@
 const port = process.env.PORT || 3000;
-const express = require('express')
-const path = require('path')
-const morgan = require('morgan')
+const express = require('express');
+const path = require('path');
+const morgan = require('morgan');
 const { Server } = require('socket.io');
 
-const app = express()
+const app = express();
 
 // static middleware
-app.use(express.static(path.join(__dirname, '..','public')))
-    .use(express.json())
-    .use(express.urlencoded({extended: true}))
-    .use(morgan('dev'))
+app
+  .use(express.static(path.join(__dirname, '..', 'public')))
+  .use(express.json())
+  .use(express.urlencoded({ extended: true }))
+  .use(morgan('dev'));
 
+app.use('/api', require('./api'));
 
-
-app.use('/api', require('./api'))
-
-app.use("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+app.use('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
-
 
 // Error handling END - WEAR
 app.use((err, req, res, next) => {
   //console.log(`ERROR: Request: ${req.path}, Received: ${err.status} ${err.message.slice(0,30)}`)
-  res.status(err.status || 500).send(err.message || 'Internal server error.')
-})
+  res.status(err.status || 500).send(err.message || 'Internal server error.');
+});
 
+const server = app.listen(port, () => console.log(`listening on port ${port}`));
 
-const server = app.listen(port, ()=> console.log(`listening on port ${port}`));
+const io = new Server(server);
 
-const io = new Server(server)
+io.on('connection', (socket) => {
+  console.log('connected to ', socket.id);
 
-io.on("connection", (socket) => {
-  console.log("connected to ", socket.id)
+  // socket.on("hello", data => console.log(data))
 
-  socket.on("hello", data => console.log(data))
-  socket.on("audio", data => console.log(data))
+  socket.emit('send-it', 'ready to receive');
 
-  socket.emit("send-it", "ready to receive")
-  setInterval(() => {
-    socket.emit("new-time", String(new Date()))
-  }, 3000)
-})
-
+  socket.on('audio', (data) => {
+    console.log(data);
+    // const answer = audioConversionAndTranslateHandler(data)
+    socket.emit('answer', answer);
+    // closes connection
+  });
+});
 
 // const serverSocket = socket(server)
 
