@@ -10,7 +10,8 @@
     "fs": "^0.0.1-security",
     "morgan": "^1.10.0",
     "pg": "^8.8.0",
-    "sequelize": "^6.28.0"
+    "sequelize": "^6.28.0",
+    "socket.io": "^4.5.4"
   },
   "scripts": {
     "test": "npm run test",
@@ -26,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/postico-gracehopper/atocha-server/issues"
   },
-  "homepage": "https://github.com/postico-gracehopper/atocha-server#readme"
+  "homepage": "https://github.com/postico-gracehopper/atocha-server#readme",
+  "devDependencies": {
+    "socket.io-client": "^4.5.4"
+  }
 }

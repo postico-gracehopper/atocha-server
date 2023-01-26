@@ -1,7 +1,8 @@
 const port = process.env.PORT || 3000;
 const express = require('express')
 const path = require('path')
-const morgan = require('morgan');
+const morgan = require('morgan')
+const { Server } = require('socket.io');
 
 const app = express()
 
@@ -27,4 +28,28 @@ app.use((err, req, res, next) => {
 })
 
 
-app.listen(port, ()=> console.log(`listening on port ${port}`));
+const server = app.listen(port, ()=> console.log(`listening on port ${port}`));
+
+const io = new Server(server)
+
+io.on("connection", (socket) => {
+  console.log("connected to ", socket.id)
+
+  socket.on("hello", data => console.log(data))
+  socket.on("audio", data => console.log(data))
+
+  socket.emit("send-it", "ready to receive")
+  setInterval(() => {
+    socket.emit("new-time", String(new Date()))
+  }, 3000)
+})
+
+
+// const serverSocket = socket(server)
+
+// serverSocket.on("connection", (socket) =>{
+//   socket.send("hello from server")
+//   socket.on("new-text", nt => console.log(nt))
+// }).on("new-text", (newText) => {
+//     console.log(newText)
+// })
