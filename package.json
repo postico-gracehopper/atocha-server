@@ -3,10 +3,12 @@
   "description": "A backend for the Atocha app",
   "version": "1.0.0",
   "main": "\"./server/index.js\"",
+  "type": "module",
   "dependencies": {
     "@google-cloud/media-translation": "^3.0.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "ffmpeg": "^0.0.4",
     "fs": "^0.0.1-security",
     "morgan": "^1.10.0",
     "pg": "^8.8.0",

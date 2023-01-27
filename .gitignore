@@ -1,4 +1,5 @@
 node_modules
+.package-lock.json
 package-lock.json
 
 .env
@@ -9,3 +10,6 @@ postico-atocha-googlekey.json
 postico-atocha-googlekey.json
 
 localIgnore
+
+temp_audio.m4a
+decoded_audio.flac

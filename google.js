@@ -1,19 +1,25 @@
-const fs = require('fs');
-require('dotenv').config();
+// const fs = require('fs');
+import fs from 'fs';
+
+// require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Imports the Cloud Media Translation client library
-const {
-  SpeechTranslationServiceClient,
-} = require('@google-cloud/media-translation');
+// const {
+//   SpeechTranslationServiceClient,
+// } = require('@google-cloud/media-translation');
+import { SpeechTranslationServiceClient } from '@google-cloud/media-translation';
 
 // Creates a client
 const client = new SpeechTranslationServiceClient();
 
-async function translate_from_file() {
+export const translate_from_file = () => {
+  console.log('enter translator');
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
-  const filename = './output.flac';
+  const filename = './decoded_audio.flac';
   const encoding = 'flac';
   const sourceLanguage = 'en-US';
   const targetLanguage = 'es-ES';
@@ -51,6 +57,7 @@ async function translate_from_file() {
       // Config-only request should be first in stream of requests
       stream.write(initialRequest);
       for (let i = 0; i < chunks.length; i++) {
+        // console.log('CHUNK: ', chunks[i]);
         stream.write(chunks[i]);
       }
       stream.end();
@@ -70,6 +77,10 @@ async function translate_from_file() {
       console.log(`Partial recognition result: ${result.recognitionResult}`);
     }
   });
-}
+  console.log('google complete');
+  // console.log(stream);
+  // return stream;
+};
 
-translate_from_file();
+// module.exports = translate_from_file;
+// translate_from_file();
