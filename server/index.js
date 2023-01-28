@@ -1,66 +1,34 @@
 const port = process.env.PORT || 3000;
-// const express = require('express');
-import express from 'express';
-// const path = require('path');
-// const morgan = require('morgan');
-// const { Server } = require('socket.io');
-// const AudioConversion = require('./translateEngine/AudioConversion');
-// const translate_from_file = require('../google');
-import { Server } from 'socket.io';
-import { AudioConversion } from './translateEngine/AudioConversion.js';
-// import { translate_from_file } from '../google.js';
+require('dotenv').config()
+const express = require('express');
+const { Server } = require('socket.io');
+const fs = require("fs")
+const translateLocalFLAC = require("./translateEngine/translateSession")
+const AudioConversion = require("./translateEngine/AudioConversion")
 
-const app = express();
+const app = express();  
 
-// static middleware
-// app
-//   .use(express.static(path.join(__dirname, '..', 'public')))
-//   .use(express.json())
-//   .use(express.urlencoded({ extended: true }))
-//   .use(morgan('dev'));
-
-// app.use('/api', require('./api'));
-
-// app.use('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../public/index.html'));
-// });
-
-// // Error handling END - WEAR
-// app.use((err, req, res, next) => {
-//   //console.log(`ERROR: Request: ${req.path}, Received: ${err.status} ${err.message.slice(0,30)}`)
-//   res.status(err.status || 500).send(err.message || 'Internal server error.');
-// });
+app.get("/", (req, res) => res.json("howdy, welcome to the landing page"))
 
 const server = app.listen(port, () => console.log(`listening on port ${port}`));
 
-const io = new Server(server);
+const io = new Server(server)
 
-io.on('connection', (socket) => {
-  console.log('connected to (server): ', socket.id);
+io.on("connection", (socket) => {
+  console.log("conneted to socket", socket.id)
 
-  // socket.on("hello", data => console.log(data))
+  socket.on('audio', async (data) =>{
+    if (data.fileFormat === "flac"){
+      fs.writeFileSync('./audio/serverSaved.flac', data.audioData, 'base64', {flag: 'w'})
+      translateLocalFLAC("./audio/serverSaved.flac", data.langSource, data.langTarget, true, socket)
 
-  socket.emit('send-it', 'ready to receive');
+    } else if (data.fileFormat === 'm4a') {
+      const tempFlacPath = await AudioConversion(data.audioData, 'tempM4A.m4a', './audio/serverSaved.flac')
+      translateLocalFLAC('./audio/serverSaved.flac', data.langSource, data.langTarget, true, socket)
+    }
 
-  socket.on('audio', async (data) => {
-    console.log('data received (server) ');
-    // const convertedAudio = AudioConversion(data);
-    const answer = await AudioConversion(data);
-    // const answer = translate_from_file();
-    // console.log('answer: ', answer);
-    console.log('audio converted');
-    // socket.emit('answer', answer);
-    // closes connection
-    socket.disconnect();
-    console.log('connection closed');
-  });
-});
+  })
 
-// const serverSocket = socket(server)
+})
 
-// serverSocket.on("connection", (socket) =>{
-//   socket.send("hello from server")
-//   socket.on("new-text", nt => console.log(nt))
-// }).on("new-text", (newText) => {
-//     console.log(newText)
-// })
+
