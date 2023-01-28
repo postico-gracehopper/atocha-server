@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
       translateLocalFLAC("./audio/serverSaved.flac", data.langSource, data.langTarget, true, socket)
 
     } else if (data.fileFormat === 'm4a') {
-      const tempFlacPath = await AudioConversion(data.audioData, 'tempM4A.m4a', './audio/serverSaved.flac')
+      const tempFlacPath = await AudioConversion(data.audioData, './audio/tempM4A.m4a', './audio/serverSaved.flac')
       translateLocalFLAC('./audio/serverSaved.flac', data.langSource, data.langTarget, true, socket)
     }
 
