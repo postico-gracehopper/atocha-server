@@ -3,7 +3,6 @@
   "description": "A backend for the Atocha app",
   "version": "1.0.0",
   "main": "\"./server/index.js\"",
-  "type": "module",
   "dependencies": {
     "@google-cloud/media-translation": "^3.0.5",
     "dotenv": "^16.0.3",
@@ -18,7 +17,8 @@
   "scripts": {
     "test": "npm run test",
     "start": "node server --ignore public",
-    "start:dev": "nodemon server --ignore public"
+    "start:dev": "nodemon server --ignore public",
+    "test:clientSocket": "npm run test/translation.spec.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/postico-gracehopper/atocha-server#readme",
   "devDependencies": {
+    "nodemon": "^2.0.20",
     "socket.io-client": "^4.5.4"
   }
 }
