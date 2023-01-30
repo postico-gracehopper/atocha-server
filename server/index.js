@@ -8,6 +8,7 @@ const AudioConversion = require("./translateEngine/AudioConversion")
 
 const app = express();  
 
+app.use('/api', require('./api'))
 app.get("/", (req, res) => res.json("howdy, welcome to the landing page"))
 
 const server = app.listen(port, () => console.log(`listening on port ${port}`));
@@ -23,8 +24,9 @@ io.on("connection", (socket) => {
       translateLocalFLAC("./audio/serverSaved.flac", data.langSource, data.langTarget, true, socket)
 
     } else if (data.fileFormat === 'm4a') {
+      console.log('received an m4a')
       const tempFlacPath = await AudioConversion(data.audioData, './audio/tempM4A.m4a', './audio/serverSaved.flac')
-      translateLocalFLAC('./audio/serverSaved.flac', data.langSource, data.langTarget, true, socket)
+      translateLocalFLAC(tempFlacPath, data.langSource, data.langTarget, true, socket)
     }
 
   })
