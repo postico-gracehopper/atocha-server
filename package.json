@@ -10,6 +10,7 @@
     "ffmpeg": "^0.0.4",
     "fs": "^0.0.1-security",
     "morgan": "^1.10.0",
+    "openai": "^3.1.0",
     "pg": "^8.8.0",
     "sequelize": "^6.28.0",
     "socket.io": "^4.5.4"
