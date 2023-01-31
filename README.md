@@ -20,6 +20,14 @@ POST /api/translate
 
     ffmpeg -i male-1.wav -ar 16000 output.flac
 
+## Docker:
+### Build docker image
+docker build -t <docker-username>/atocha-server-v0.1 .
+### Run docker image as container
+docker run -p 3000:3000 -d <docker-image>
+
+
+
 ## To Do List:
 - Add User Model: usual fields + default srcLang + default targetLang 
 - Add authentication - connect to routes + wss
