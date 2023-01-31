@@ -17,15 +17,13 @@ router.post("/", async (req, res, next) => {
     return;
   }
 
-  const inputLang = "Spanish";
-  const outputLang = "English";
-  console.log("req.body iss", req.body);
+  const inputLang = req.body.inputLang;
+  const outputLang = req.body.outputLang;
+  const conversation = req.body.conversation;
 
   function generateVocab(inputLang, outputLang) {
-    return `"List 12 useful ${inputLang} vocab words related to the below messages. Avoid cognates. Follow each vocab word with ${outputLang} translation.
-    "No, I've been taking it slow and exploring one area at a time.
-    "Right now there is the tamale festival in Coyoacan. Go there and try some tamales. This Saturday is Candlemas and Candeleria Town is right inside Coyoacan. You can go and experience firsthand a traditional party."
-    "Is Candlemas a holiday that's celebrated throughout Mexico?"
+    return `"List 8 useful vocab words (language: ${inputLang}) related to the below conversation. Avoid cognates. Follow each vocab word with translation in ${outputLang}.
+    Conversation: ${conversation}
     `;
   }
 
@@ -33,7 +31,7 @@ router.post("/", async (req, res, next) => {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: generateVocab(inputLang, outputLang),
-      temperature: 0.8,
+      temperature: 0.95,
       max_tokens: 100,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
