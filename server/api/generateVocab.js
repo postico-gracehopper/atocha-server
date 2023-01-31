@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
 
   const inputLang = "Spanish";
   const outputLang = "English";
-  console.log("req dot obdy iss", req.body);
+  console.log("req.body iss", req.body);
 
   function generateVocab(inputLang, outputLang) {
     return `"List 12 useful ${inputLang} vocab words related to the below messages. Avoid cognates. Follow each vocab word with ${outputLang} translation.

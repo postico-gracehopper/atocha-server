@@ -5,13 +5,13 @@ const { Server } = require("socket.io");
 const fs = require("fs");
 const translateLocalFLAC = require("./translateEngine/translateSession");
 const AudioConversion = require("./translateEngine/AudioConversion");
-// const bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 
 const app = express();
 
 // parse application/json - for openAI post requests
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use("/api", require("./api"));
 app.get("/", (req, res) => res.json("howdy, welcome to the landing page"));
