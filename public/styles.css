@@ -95,6 +95,11 @@ p#top-text {
     0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
 }
 
+.btn:hover {
+    filter: brightness(70%);
+    cursor:pointer;
+}
+
 p#op-button {
     color: var(--lightPurple);
     padding: 50px;
