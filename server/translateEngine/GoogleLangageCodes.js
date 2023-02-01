@@ -1,4 +1,4 @@
-export const languages = [
+const languages = [
   { languageName: 'English (US)', languageCode: 'en-US' },
   { languageName: 'French', languageCode: 'fr-FR' },
   { languageName: 'German', languageCode: 'de-DE' },
@@ -12,7 +12,12 @@ export const languages = [
   { languageName: 'Thai', languageCode: 'th-TH' },
 ];
 
-export const ConvertLanguageNameToCode = (languageName) => {
+const ConvertLanguageNameToCode = (languageName) => {
   const result = languages.filter((obj) => obj.languageName === languageName);
   return result[0].languageCode;
 };
+
+module.exports = {
+  languages, 
+  ConvertLanguageNameToCode
+}
