@@ -34,8 +34,8 @@ const flacReq = () => {
         const testM4a = fs.readFileSync('/Users/blakebequette/fullstack/atocha/atocha-server/test/sample.flac', {encoding: 'base64'})
         socket.emit("audio", 
         {
-            langSource: "en-US",
-            langTarget: "es-ES",
+            langSource: "en",
+            langTarget: "es",
             audioData: testM4a,
             fileFormat: "flac"
         })
@@ -49,4 +49,4 @@ const flacReq = () => {
 
 
 setTimeout(m4aReq, 2000)
-setTimeout(flacReq, 10000)
+// setTimeout(flacReq, 10000)

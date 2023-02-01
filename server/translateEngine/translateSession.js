@@ -36,22 +36,6 @@ class GoogleTranslateSession {
         return this.logging ? console.log(...data) : () => {}
     }
 
-    googleStream2Socket(clientSocketInstance){
-        return this.gClient.streamingTranslateSpeech().on('data', (response) => {
-            const { result } = response;
-            if (result.textTranslationResult.isFinal) {
-              this.log(
-                `google <- atocha: *Final* translation: ${result.textTranslationResult.translation.slice(0,40)}`
-              );
-              clientSocketInstance.emit("final-translation", result.textTranslationResult)
-            } else {
-              this.log(
-                `google <- atocha: Partial translation: ${result.textTranslationResult.translation.slice(0,40)}`
-              )
-              clientSocketInstance.emit("partial-translation", result.textTranslationResult)
-            }
-          }).on("error", (err) => this.log(err))
-    }
 
     googleStream2SocketPlusLog(clientSocketInstance, callback){
         return this.gClient.streamingTranslateSpeech().on('data', (response) => {
@@ -61,65 +45,49 @@ class GoogleTranslateSession {
                         `google <- atocha: *Final* translation: ${result.textTranslationResult.translation.slice(0,40)}`
                     );
                     this.finalTranslation = result.textTranslationResult.translation
-                    clientSocketInstance.emit('final-translation', result.textTranslationResult)
+                    if (clientSocketInstance) {
+                        clientSocketInstance.emit('final-translation', result.textTranslationResult)
+                    }
                     callback(result.textTranslationResult)
                 } else {
                 this.log(
                     `google <- atocha: Partial translation: ${result.textTranslationResult.translation.slice(0,40)}`
                     )
-                    clientSocketInstance.emit("partial-translation", result.textTranslationResult)
-                }
+                    if (clientSocketInstance) {
+                        clientSocketInstance.emit("partial-translation", result.textTranslationResult)
+                    }
+                    }
             }).on("error", (err) => console.error(err))
         }
-    
-
-
-    localFlacToGoogleInternal(filename, clback){
-        let chunks = [this.initialRequest]
-        const gStream = this.googleStream2Server(clback)
-        fs.createReadStream(filename).on("data", (data) => {
-            chunks.push(this.requestify(data))
-        }).on("close", () => {
-            chunks.map(chunk => {
-                gStream.write(chunk)
-            })
-            gStream.end()
-        })
-    }
-
-
-    localFlacToGoogleThenClient(filename, clientSocketInstance){
-        let chunks = [this.initialRequest]
-        const gStream = this.googleStream2Socket(clientSocketInstance)
-        fs.createReadStream(filename).on("data", (data) => {
-            chunks.push(this.requestify(data))
-        }).on("close", () => {
-            chunks.map(chunk => {
-                gStream.write(chunk)
-            })
-            gStream.end()
-        })
-    }
 
 }
 
 
-async function translateLocalFLAC(filename, langSrc, langTrgt, logging=false, socket=false){
-    var collector = ""
-    const session = new GoogleTranslateSession(langSrc, langTrgt, logging)
-    if (socket) {
-        session.localFlacToGoogleThenClient(filename, socket)
-    } else {
-        session.localFlacToGoogleInternal(filename)
-    }
-    return collector
-    
+function translateFile(filename, langSource, langTarget, clientsocket, logging=false){
+    return new Promise ((resolve, reject) => {
+        const GTranslator = new GoogleTranslateSession(langSource, langTarget, logging)
+        const writeStream2Google = GTranslator.googleStream2SocketPlusLog(clientsocket, (finalTranslation) =>{
+            resolve(finalTranslation)
+        })
+
+        let chunks = [GTranslator.initialRequest]
+        fs.createReadStream(filename).on('data', (data) => {
+            chunks.push(GTranslator.requestify(data))
+        }).on('close', () => {
+            chunks.map(chunk => {
+                writeStream2Google.write(chunk)
+            })
+            writeStream2Google.end()
+        }).on('err', (err) => {
+            reject(err)
+        })
+    })
 }
 
 if (require.main === module){
-   translateLocalFLAC("../../test/sample.flac", "en-US", "es-ES", true, false)
+   translateFile("../../test/sample.flac", "en-US", "es-ES", null, false)
 }
 
 
 
-module.exports = GoogleTranslateSession
+module.exports = translateFile
