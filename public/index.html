@@ -5,28 +5,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
-  <script defer src="index.js"></script>
+  <script defer src="bundle.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="styles.css" />
   <link rel="icon" type="data:;base64," href="parrot.png">
 </head>
-<body style="font-family: sans-serif";>
-  <h1 style="text-align: center; margin-top: 40px;">Atocha</h1>
-  <p style="text-align: center;">See our App on the <a href="" >App Store</a></p>
-  <div style="margin-left: 100px; margin-top: 100px;">
-    <h2>API Documentation</h2>
-    <p><pre style="font-size: x-large; font-family: Trebuchet MS;">
-
-      <b><u>POST /api/translate</u></b>
-      
-        REQUEST 
-          body: {langFrom: 'es', langTo: 'en', audio: [audioFile] }
-
-        RESPONSE: 
-          body: {langFrom: 'es', langTo: 'en', textResponse: [String]}
-    </pre>
-    </p>
-
-
+<body>
+  <div id="root">
   </div>
 </body>
 </html>

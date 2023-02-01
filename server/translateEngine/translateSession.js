@@ -53,22 +53,25 @@ class GoogleTranslateSession {
           }).on("error", (err) => this.log(err))
     }
 
-    googleStream2Server(clback=()=>{}){
+    googleStream2SocketPlusLog(clientSocketInstance, callback){
         return this.gClient.streamingTranslateSpeech().on('data', (response) => {
-            const { result } = response;
-            if (result.textTranslationResult.isFinal) {
-              this.log(
-                `google <- atocha: *Final* translation: ${result.textTranslationResult.translation.slice(0,40)}`
-              );
-              this.finalTranslation = result.textTranslationResult.translation
-              clback(this.finalTranslation)
-            } else {
-              this.log(
-                `google <- atocha: Partial translation: ${result.textTranslationResult.translation.slice(0,40)}`
-              )
-            }
-          }).on("error", (err) => console.log(err))
-    }
+                const { result } = response;
+                if (result.textTranslationResult.isFinal) {
+                    this.log(
+                        `google <- atocha: *Final* translation: ${result.textTranslationResult.translation.slice(0,40)}`
+                    );
+                    this.finalTranslation = result.textTranslationResult.translation
+                    clientSocketInstance.emit('final-translation', result.textTranslationResult)
+                    callback(result.textTranslationResult)
+                } else {
+                this.log(
+                    `google <- atocha: Partial translation: ${result.textTranslationResult.translation.slice(0,40)}`
+                    )
+                    clientSocketInstance.emit("partial-translation", result.textTranslationResult)
+                }
+            }).on("error", (err) => console.error(err))
+        }
+    
 
 
     localFlacToGoogleInternal(filename, clback){
@@ -119,4 +122,4 @@ if (require.main === module){
 
 
 
-module.exports = translateLocalFLAC
+module.exports = GoogleTranslateSession
