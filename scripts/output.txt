@@ -1,0 +1,63 @@
+const colors = {
+  primary: '#470024',
+  purple: '#8100ff',
+  lightPurple: '#9388db',
+  lightGrayPurple: '#f7f7fb',
+  pink: '#ff3d69',
+  gray: '#797777',
+  white: '#fff',
+}
+
+export default colors
+import * as Font from 'expo-font'
+
+// fonts preloading
+export const fontAssets = [
+  {
+    openSans_regular: require('../../assets/fonts/OpenSans-Regular.ttf'),
+  },
+  {
+    openSans_regular_italic: require('../../assets/fonts/OpenSans-Italic.ttf'),
+  },
+  {
+    openSans_semiBold: require('../../assets/fonts/OpenSans-Semibold.ttf'),
+  },
+  {
+    openSans_semiBold_italic: require('../../assets/fonts/OpenSans-SemiboldItalic.ttf'),
+  },
+  {
+    openSans_bold: require('../../assets/fonts/OpenSans-Bold.ttf'),
+  },
+  {
+    openSans_bold_italic: require('../../assets/fonts/OpenSans-BoldItalic.ttf'),
+  },
+].map((x) => Font.loadAsync(x))
+
+const fonts = {
+  openSan: {
+    regular: 'openSans_regular',
+    regularItalic: 'openSans_regular_italic',
+    semiBold: 'openSans_semiBold',
+    semiBoldItalic: 'openSans_semiBold_italic',
+    bold: 'openSans_bold',
+    boldItalic: 'openSans_bold_italic',
+  },
+}
+
+export default fonts
+import { Asset } from 'expo-asset'
+
+const images = {
+  logo_sm: require('../../assets/images/logo-sm.png'),
+  logo_lg: require('../../assets/images/logo-lg.png'),
+}
+
+// image preloading
+export const imageAssets = Object.keys(images).map((key) => Asset.fromModule(images[key]).downloadAsync())
+
+export default images
+import colors from './colors'
+import fonts from './fonts'
+import images from './images'
+
+export { colors, fonts, images }
