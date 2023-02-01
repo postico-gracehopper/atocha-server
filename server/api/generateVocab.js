@@ -22,7 +22,7 @@ router.post("/", async (req, res, next) => {
   const conversation = req.body.conversation;
 
   function generateVocab(inputLang, outputLang) {
-    return `"List 8 useful vocab words (language: ${inputLang}) related to the below conversation. Avoid cognates. Follow each vocab word with translation in ${outputLang}.
+    return `"List 8 vocab words (language: ${inputLang}) related to the below conversation. Avoid cognates. Follow each vocab word with its equivalent in ${outputLang}.
     Conversation: ${conversation}
     `;
   }
@@ -31,8 +31,8 @@ router.post("/", async (req, res, next) => {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: generateVocab(inputLang, outputLang),
-      temperature: 0.95,
-      max_tokens: 100,
+      temperature: 0.85,
+      max_tokens: 200,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
