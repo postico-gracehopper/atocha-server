@@ -17,3 +17,5 @@ localIgnore
 
 temp_audio.m4a
 decoded_audio.flac
+
+audio
