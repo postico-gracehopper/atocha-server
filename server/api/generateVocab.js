@@ -21,16 +21,16 @@ router.post("/", async (req, res, next) => {
   const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
-  function generateVocab(inputLang, outputLang) {
-    return `"List 8 vocab words (language: ${inputLang}) related to the below conversation. Avoid cognates. Follow each vocab word with its equivalent in ${outputLang}.
-    Conversation: ${conversation}
+  function generateVocab(lang1, lang2, messages) {
+    return `List 8 ${lang1} words related to the below message. Follow each vocab word with its ${lang2}. None of these pairs should be cognates. List only the vocab words, no language labels. Line break for each new ${lang1} word.
+    Message: ${messages}
     `;
   }
 
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generateVocab(inputLang, outputLang),
+      prompt: generateVocab(inputLang, outputLang, conversation),
       temperature: 0.85,
       max_tokens: 200,
     });
@@ -40,6 +40,7 @@ router.post("/", async (req, res, next) => {
       console.error(error.response.status, error.response.data);
       res.status(error.response.status).json(error.response.data);
     } else {
+      console.log("Input lang is", inputLang);
       console.error(`Error with OpenAI API request: ${error.message}`);
       res.status(500).json({
         error: {
