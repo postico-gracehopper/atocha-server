@@ -5,7 +5,9 @@ const express = require('express');
 const { Server } = require('socket.io');
 const fs = require("fs")
 const morgan = require("morgan")
+
 const translateFile = require("./translateEngine/translateSession")
+const transcibeFile = require('./translateEngine/transcribeSession')
 const AudioConversion = require("./translateEngine/AudioConversion")
 
 const app = express()
@@ -35,27 +37,38 @@ io.on("connection", (socket) => {
   console.log("conneted to socket", socket.id)
   
   socket.on('audio', async (data) =>{
-    const startTime = Date.now()
+    const receivedTime = Date.now()
     const tempFlacPath = await AudioConversion(data.audioData, './audio/tempM4A.m4a', './audio/serverSaved.flac')
-    translateFile(tempFlacPath, data.langSource, data.langTarget, socket, true).then((finalTranslation) => {
-      console.log(JSON.stringify(finalTranslation))
-    })
-    /// transcibeFile()
-    
+    const conversionTime = Date.now()
+
+    Promise.all([
+      translateFile(tempFlacPath, data.langSource, data.langTarget, socket, false).then(x => x).catch(console.error),
+      transcibeFile(tempFlacPath, data.langSource, socket, false).then(x => x).catch(console.error)
+    ]).then(([translationObj, transciptionObj]) => {
+      const sessionRecord = {
+        user: socket.id,
+        langSource: data.langSource,
+        langTarget: data.langTarget,
+        ...translationObj, 
+        ...transciptionObj, 
+        convertElapsedTime: conversionTime - receivedTime,
+        serverElapsedTime: Date.now() - receivedTime}
+      console.log(JSON.stringify(sessionRecord))
+    }).catch(console.error)
   })
   
 })
 
 
-function makeSessionRecord(user, sourceLang, targetLang, inputFile, outputText, startTime){
-  console.log(JSON.stringify(
-    {
-      user,
-      sourceLang,
-      targetLang,
-      inputFile: inputFile.slice(0,20), 
-      outputText,
-      elapsedTime: Date.now() - startTime
-    }
-  ))
-}
+// function makeSessionRecord(user, sourceLang, targetLang, inputFile, outputText, startTime){
+//   console.log(JSON.stringify(
+//     {
+//       user,
+//       sourceLang,
+//       targetLang,
+//       inputFile: inputFile.slice(0,20), 
+//       outputText,
+//       elapsedTime: Date.now() - startTime
+//     }
+//   ))
+// }

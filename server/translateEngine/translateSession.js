@@ -5,6 +5,7 @@ require('dotenv').config()
 
 class GoogleTranslateSession {
     constructor(langSource, langTarget, logging=false){
+        this.startTime = Date.now()
         this.gClient = new SpeechTranslationServiceClient()
         this.langSource = langSource
         this.langTarget = langTarget
@@ -22,7 +23,6 @@ class GoogleTranslateSession {
             streamingConfig: this.config,
             audioContent: null
         }
-        this.finalTranslation
     }
 
     requestify(data){
@@ -48,7 +48,10 @@ class GoogleTranslateSession {
                     if (clientSocketInstance) {
                         clientSocketInstance.emit('final-translation', result.textTranslationResult)
                     }
-                    callback(result.textTranslationResult)
+                    callback({
+                        translation: result.textTranslationResult.translation,
+                        translateElapsedTime: Date.now() - this.startTime
+                    })
                 } else {
                 this.log(
                     `google <- atocha: Partial translation: ${result.textTranslationResult.translation.slice(0,40)}`

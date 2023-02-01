@@ -2,7 +2,6 @@
 const router = require('express').Router()
 // const { spawn } = require("node:child_process")
 
-router.use('/translate', require('./translate'))
 router.use('/checkDocker', require('./checkDocker'))
 
 // catch all the Not Found's from the api
