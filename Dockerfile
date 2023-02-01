@@ -1,12 +1,11 @@
 FROM node:16
 
 RUN apt-get update && \
-    apt-get install -y python3 && \
-    rm -rf /var/lib/apt/lists/*
+    apt install ffmpeg -y
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json .
 
 RUN npm install
 

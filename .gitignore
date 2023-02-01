@@ -1,6 +1,7 @@
 node_modules
 .package-lock.json
 package-lock.json
+*package-lock.json
 
 .env
 
@@ -17,3 +18,10 @@ localIgnore
 
 temp_audio.m4a
 decoded_audio.flac
+
+public
+*bundle.js
+*bundle.js.map
+
+audio
+audio
