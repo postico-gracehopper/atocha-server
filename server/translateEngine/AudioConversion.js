@@ -22,7 +22,6 @@ const AudioConversion = (data, inFilename, outFileName) => {
   
     ffmpeg.on('exit', (code) => {
       if (code === 0) {
-        console.log('Audio file was converted to .flac format successfully');
         resolve(outFileName)
       } else {
         reject(new Error("could not convert file"))
