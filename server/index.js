@@ -38,11 +38,17 @@ io.on('connection', (socket) => {
 
   socket.on('audio', async (data) => {
     const receivedTime = Date.now();
-    const tempFlacPath = await AudioConversion(
-      data.audioData,
-      './audio/tempM4A.m4a',
-      './audio/serverSaved.flac'
-    );
+    let tempFlacPath 
+    try {
+      tempFlacPath = await AudioConversion(
+        data.audioData,
+        './audio/tempM4A.m4a',
+        './audio/serverSaved.flac'
+      );
+    } catch(err) {
+      socket.emit('error', 'problem with sent audio file')
+      throw new Error('audio could not be converted')
+    }
     const conversionTime = Date.now();
 
     Promise.all([
@@ -73,7 +79,7 @@ io.on('connection', (socket) => {
       .then(() => socket.emit('session-complete'))
       .catch(() => {
         console.error;
-        socket.emit('session-error');
+        socket.emit('error', 'could not translate session audio');
       });
   });
 });
