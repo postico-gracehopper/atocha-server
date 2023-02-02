@@ -46,6 +46,9 @@ io.on('connection', (socket) => {
     const conversionTime = Date.now();
 
     Promise.all([
+      transcibeFile(tempFlacPath, data.langSource, socket, false).catch(
+        console.error
+      ),
       translateFile(
         tempFlacPath,
         data.langSource,
@@ -53,9 +56,6 @@ io.on('connection', (socket) => {
         socket,
         false
       ).catch(console.error),
-      transcibeFile(tempFlacPath, data.langSource, socket, false).catch(
-        console.error
-      ),
     ])
       .then(([translationObj, transciptionObj]) => {
         const sessionRecord = {
