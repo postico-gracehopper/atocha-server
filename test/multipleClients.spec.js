@@ -46,8 +46,9 @@ const m4aReq = () => {
     })
 
     socket.on('session-complete', () => {
-        setTimeout(() => socket.close(), 10000)
-
+        setTimeout(() => console.log(JSON.stringify(results)), 1000)
     })
 
 }
+
+m4aReq()
