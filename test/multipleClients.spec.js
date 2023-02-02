@@ -1,19 +1,22 @@
 const { io } = require('socket.io-client');
 const fs = require("fs")
 
-function printResults({connectedId, translation, transcription}){
+function printResults({connectedId, translation, transcription, no, time}){
     console.log(
-`socket ${connectedId}
+`#${no} socket ${connectedId}
     translate: ${translation ? '✅' + translation.slice(0, 15) : '❌'}
-    transcribe: ${transcription ? '✅' + transcription.slice(0, 15) : '❌'}`
+    transcribe: ${transcription ? '✅' + transcription.slice(0, 15) : '❌'}
+    time: ${time}`
 )
 }
 
-const m4aReq = () => {
+const m4aReq = (no) => {
     let results = {
+        no: no, 
         connectedId: null,
         translation: null,
         transcription: null,
+        time: Date.now()
         
     }
     const socket = io("http://127.0.0.1:3000"); 
@@ -28,27 +31,24 @@ const m4aReq = () => {
             fileFormat: "m4a"
         })
         })
-
-    // socket.on("partial-translation", (partialTranslation) => {
-    //    console.log(`   Partial translation: ${partialTranslation.translation.slice(0,30)}`)
-    // })
-
     socket.on("final-translation", (finalTranslation) => {
             results.translation = finalTranslation.translation
     })
-
-    // socket.on("partial-transcription", (partialTranscription) => {
-    //    console.log(`   Partial transcription: ${partialTranscription}`)
-    // })
 
     socket.on("final-transcription", (finalTranscription) => {
         results.transcription = finalTranscription
     })
 
     socket.on('session-complete', () => {
-        setTimeout(() => console.log(JSON.stringify(results)), 1000)
+        results.time = Date.now() - results.time
+        setTimeout(() => printResults(results), 1000)
     })
-
 }
 
-m4aReq()
+const NUM_CLIENTS = 10
+const TIMESPAN = 10 * 1000 // seconds * milliseconds
+const clients = Array(NUM_CLIENTS).fill(0).map(() => Math.floor(Math.random() * TIMESPAN))
+clients.map((client, numberSocket)=> {
+    console
+    setTimeout(() => m4aReq(numberSocket), client)
+})
