@@ -1,9 +1,4 @@
-// const Firestore = require('@google-cloud/firestore')
 
-// const db = new Firestore({
-//   projectId: 'atocha-c5fca',
-//   keyFilename: './fireBaseConfig.json',
-// })
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
