@@ -19,34 +19,49 @@ const m4aReq = () => {
         })
         })
 
-    socket.on("final-translation", (finalTranslation) => {
-            console.log(finalTranslation)
-            socket.close()
+    socket.on("partial-translation", (partialTranslation) => {
+       console.log(`   Partial translation: ${partialTranslation.translation.slice(0,30)}`)
     })
+
+    socket.on("final-translation", (finalTranslation) => {
+            console.log('Received a final translation:')
+            console.log(finalTranslation.translation)
+    })
+
+    socket.on("partial-transcription", (partialTranscription) => {
+       console.log(`   Partial transcription: ${partialTranscription}`)
+    })
+
+    socket.on("final-transcription", (finalTranscription) => {
+        console.log('Received a final transcription:')
+        console.log(finalTranscription)
+    })
+
+    setTimeout(() => socket.close(), 10000)
 }
 
-// Simulate a Flac request
-const flacReq = () => {
-    const socket = io("http://127.0.0.1:3000"); 
-    socket.on("connect", () => {
-        console.log("connected to socket server ")
+// // Simulate a Flac request
+// const flacReq = () => {
+//     const socket = io("http://127.0.0.1:3000"); 
+//     socket.on("connect", () => {
+//         console.log("connected to socket server ")
         
-        const testM4a = fs.readFileSync('/Users/blakebequette/fullstack/atocha/atocha-server/test/sample.flac', {encoding: 'base64'})
-        socket.emit("audio", 
-        {
-            langSource: "en-US",
-            langTarget: "es-ES",
-            audioData: testM4a,
-            fileFormat: "flac"
-        })
-    })
+//         const testM4a = fs.readFileSync('/Users/blakebequette/fullstack/atocha/atocha-server/test/sample.flac', {encoding: 'base64'})
+//         socket.emit("audio", 
+//         {
+//             langSource: "en",
+//             langTarget: "es",
+//             audioData: testM4a,
+//             fileFormat: "flac"
+//         })
+//     })
 
-    socket.on("final-translation", (finalTranslation) => {
-        console.log(finalTranslation)
-        socket.close()
-    })
-}
+//     socket.on("final-translation", (finalTranslation) => {
+//         console.log(finalTranslation)
+//         socket.close()
+//     })
+// }
 
 
-setTimeout(m4aReq, 2000)
-setTimeout(flacReq, 10000)
+setTimeout(m4aReq, 1000)
+// setTimeout(flacReq, 10000)
