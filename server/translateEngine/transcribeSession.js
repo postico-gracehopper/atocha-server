@@ -21,7 +21,7 @@ class GoogleTranscribeSession {
     googleTranscribeStream(clientSocket=null, callback, erCallback){
         return client
                 .streamingRecognize(this.request)
-                .on('error', console.error)
+                .on('error', erCallback || console.error)
                 .on('data', data => {
                     const  { isFinal } = data.results[0]
                     const { transcript } = data.results[0].alternatives[0]
@@ -32,7 +32,10 @@ class GoogleTranscribeSession {
                                 transciptionConfidence: data.results[0].alternatives[0].confidence,
                                 transcribeElapsedTime: Date.now() - this.startTime})
                     } else {
-                        if (clientSocket) clientSocket.emit('partial-transcription', transcript)
+                        console.log(transcript)
+                        if (clientSocket) {
+                            clientSocket.emit('partial-transcription', transcript)
+                        }
                         if (this.logging) console.log(`google <- atocha: Partial transcription: ${transcript.slice(0,40)}`)
                     }
                 })

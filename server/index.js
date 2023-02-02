@@ -2,9 +2,8 @@ const port = process.env.PORT || 3000;
 require('dotenv').config()
 const path = require('path')
 const express = require('express');
-const { Server } = require('socket.io');
-const fs = require("fs")
 const morgan = require("morgan")
+const { Server } = require('socket.io');
 
 const translateFile = require("./translateEngine/translateSession")
 const transcibeFile = require('./translateEngine/transcribeSession')
@@ -42,8 +41,8 @@ io.on("connection", (socket) => {
     const conversionTime = Date.now()
 
     Promise.all([
-      translateFile(tempFlacPath, data.langSource, data.langTarget, socket, false).then(x => x).catch(console.error),
-      transcibeFile(tempFlacPath, data.langSource, socket, false).then(x => x).catch(console.error)
+      translateFile(tempFlacPath, data.langSource, data.langTarget, socket, false).catch(console.error),
+      transcibeFile(tempFlacPath, data.langSource, socket, false).catch(console.error)
     ]).then(([translationObj, transciptionObj]) => {
       const sessionRecord = {
         user: socket.id,
@@ -52,23 +51,11 @@ io.on("connection", (socket) => {
         ...translationObj, 
         ...transciptionObj, 
         convertElapsedTime: conversionTime - receivedTime,
-        serverElapsedTime: Date.now() - receivedTime}
+        serverElapsedTime: Date.now() - receivedTime
+      }
+
       console.log(JSON.stringify(sessionRecord))
     }).catch(console.error)
   })
   
 })
-
-
-// function makeSessionRecord(user, sourceLang, targetLang, inputFile, outputText, startTime){
-//   console.log(JSON.stringify(
-//     {
-//       user,
-//       sourceLang,
-//       targetLang,
-//       inputFile: inputFile.slice(0,20), 
-//       outputText,
-//       elapsedTime: Date.now() - startTime
-//     }
-//   ))
-// }

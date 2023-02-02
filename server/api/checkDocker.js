@@ -22,7 +22,7 @@ async function cmdObj(...command) {
 
 
 router.get('/', async (req, res, next) => {
-    let commands = [['ls'], ['pwd'], ['python3', '--version'], ['node', '--version'], ['ffmpeg', '-version']] // add pip3 in here
+    let commands = [['ls'], ['pwd'], ['python3', '--version'], ['node', '--version'], ['ffmpeg', '-version']] 
     const result = await Promise.all(commands.map(c => cmdObj(...c))).then((values) => {
         return values.reduce((acc, val) => Object.assign(acc, val), {})
     })
