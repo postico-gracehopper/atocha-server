@@ -21,8 +21,8 @@ router.post("/", async (req, res, next) => {
   const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
-  function generateVocab(lang1, lang2, messages) {
-    return `List 8 ${lang1} words related to the below message. Follow each vocab word with its ${lang2}. None of these pairs should be cognates. List only the vocab words, no language labels. Line break for each new ${lang1} word.
+  function generateVocab(lang1, messages) {
+    return `List seven useful ${lang1} words related to the below message. Don't number the results. No definitions.
     Message: ${messages}
     `;
   }
@@ -30,7 +30,7 @@ router.post("/", async (req, res, next) => {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generateVocab(inputLang, outputLang, conversation),
+      prompt: generateVocab(inputLang, conversation),
       temperature: 0.85,
       max_tokens: 200,
     });
