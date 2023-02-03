@@ -18,7 +18,6 @@ router.post("/", async (req, res, next) => {
   }
 
   const inputLang = req.body.inputLang;
-  const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
   function generateVocab(lang1, messages) {

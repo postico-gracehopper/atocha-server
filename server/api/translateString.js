@@ -7,6 +7,7 @@ const translate = new Translate({ projectId });
 
 router.post("/", async (req, res, next) => {
   const target = req.body.targetLang;
+  // const target = "en";
   const text = req.body.text;
 
   try {
