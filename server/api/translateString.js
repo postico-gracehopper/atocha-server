@@ -27,7 +27,9 @@ router.post("/", async (req, res, next) => {
     translations = Array.isArray(translations) ? translations : [translations];
     let rez = [];
     translations.forEach((translation) => {
-      rez.push(`${translation}`);
+      if (translation !== "") {
+        rez.push(`${translation}`);
+      }
     });
     res.status(200).send(rez);
   } catch (error) {
