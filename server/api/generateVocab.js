@@ -21,7 +21,7 @@ router.post("/", async (req, res, next) => {
   const conversation = req.body.conversation;
 
   function generateVocab(lang1, messages) {
-    return `List seven useful ${lang1} words related to the below message. Don't number the results. No definitions.
+    return `Generate six useful ${lang1} words related to the themes of the below message. The new, generated words shouldn't appear in the original message. Don't number the results. No definitions.
     Message: ${messages}
     `;
   }
