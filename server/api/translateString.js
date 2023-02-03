@@ -1,19 +1,13 @@
 const { Translate } = require("@google-cloud/translate").v2;
+const router = require("express").Router();
 
 const projectId = "atocha-c5fca";
-const keyFilename = "./translate-config.json";
 
 const translate = new Translate({ projectId });
 
-console.log("Here it is", process.env.GOOGLE_APPLICATION_CREDENTIALS);
-const router = require("express").Router();
-
 router.post("/", async (req, res, next) => {
-  // const target = req.body.targetLang;
+  const target = req.body.targetLang;
   const text = req.body.text;
-  const target = "en";
-  // const text = "snow";
-  // const target = "ru";
 
   try {
     //   Translates the text into the target language. "text" can be a string for
