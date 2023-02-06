@@ -90,12 +90,6 @@ io.on('connection', (socket) => {
       ).catch(console.error),
     ])
       .then((translationObj) => {
-        console.log('entered .then');
-        console.log(
-          '🚀 ~ file: index.js:93 ~ .then ~ translationObj',
-          translationObj[0]
-        );
-
         const sessionRecord = {
           user: socket.id,
           langSource: data.langSource,
@@ -106,7 +100,6 @@ io.on('connection', (socket) => {
           serverElapsedTime: Date.now() - receivedTime,
         };
 
-        console.log('exit .then');
         console.log(JSON.stringify(sessionRecord));
       })
       .then(() => socket.emit('session-complete'))

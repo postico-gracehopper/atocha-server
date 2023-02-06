@@ -7,11 +7,6 @@ class GoogleTextTranslateSession {
     this.langSource = langSource;
     this.langTarget = langTarget;
     this.logging = logging;
-    this.request = {
-      source: langSource,
-      target: langTarget,
-      // enableAutomaticPunctuation: true,
-    };
   }
 
   async googleTextTranslateStream(
