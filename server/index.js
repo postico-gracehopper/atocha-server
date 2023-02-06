@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const { Server } = require('socket.io');
 const socketHandlers = require("./socketAPI")
 
-const {db, auth} = require('./dbFirebase')
+const {db, fireAuth} = require('./dbFirebase')
 
 const app = express();
 
@@ -15,6 +15,8 @@ app
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(morgan('dev'));
+
+
 
 app.use('/api', require('./api'));
 
