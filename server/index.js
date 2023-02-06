@@ -9,6 +9,7 @@ const db = require("./dbFirebase");
 
 const translateFile = require("./translateEngine/translateSession");
 const transcibeFile = require("./translateEngine/transcribeSession");
+const textTranslateString = require("./translateEngine/textTranslateSession");
 const AudioConversion = require("./translateEngine/AudioConversion");
 
 const app = express();
@@ -77,7 +78,7 @@ io.on("connection", (socket) => {
       })
       .then(([translationObj, transciptionObj]) => {
         const sessionRecord = {
-          user: socket.id,
+          user: data.userUID,
           langSource: data.langSource,
           langTarget: data.langTarget,
           ...translationObj,
@@ -91,10 +92,41 @@ io.on("connection", (socket) => {
       .then((session) => {
         return db
           .collection("TranslateSession")
-          .doc(`${session.user}-${session.date}`)
+          .doc(`${data.userUID}-${session.date}`)
           .set(session);
       })
       .then(() => console.log("    Saved to Google Firestore"))
       .catch(console.error);
+  });
+
+  socket.on("text", async (data) => {
+    const receivedTime = Date.now();
+    Promise.all([
+      textTranslateString(
+        data.text,
+        data.langSource,
+        data.langTarget,
+        socket,
+        true
+      ).catch(console.error),
+    ])
+      .then((translationObj) => {
+        const sessionRecord = {
+          user: socket.id,
+          langSource: data.langSource,
+          langTarget: data.langTarget,
+          transcribedText: data.text,
+          ...translationObj[0],
+          convertElapsedTime: -1,
+          serverElapsedTime: Date.now() - receivedTime,
+        };
+
+        console.log(JSON.stringify(sessionRecord));
+      })
+      .then(() => socket.emit("session-complete"))
+      .catch(() => {
+        console.error;
+        socket.emit("session-error");
+      });
   });
 });
