@@ -4,12 +4,9 @@ const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const { Server } = require('socket.io');
+const socketHandlers = require("./socketAPI")
 
-const db = require('./dbFirebase')
-
-const translateFile = require('./translateEngine/translateSession');
-const transcibeFile = require('./translateEngine/transcribeSession');
-const AudioConversion = require('./translateEngine/AudioConversion');
+const {db, auth} = require('./dbFirebase')
 
 const app = express();
 
@@ -33,66 +30,19 @@ const server = app.listen(port, () =>
   console.log(`\nlistening on port ${port}\n`)
 );
 
+
 const io = new Server(server);
 
-io.on('connection', (socket) => {
-  console.log('conneted to socket', socket.id);
+const loggingMiddleware = (s, next) => {
+  console.log(`WS: dest: ${s.adapter.nsp.name}, socket: ${s.id}`)
+  next()
+  // Example of sending back an error
+  // const e = new Error("thats not allowed")
+  // next(e)
+}
 
-  socket.on('audio', async (data) => {
-    const receivedTime = Date.now();
-    let tempFlacPath 
-    try {
-      tempFlacPath = await AudioConversion(
-        data.audioData,
-        './audio/tempM4A.m4a',
-        './audio/serverSaved.flac'
-      );
-      console.log('    Audio file was converted to .flac format successfully');
-    } catch(err) {
-      socket.emit('error', 'problem with sent audio file')
-      throw new Error('audio could not be converted')
-    }
-    const conversionTime = Date.now();
-
-    Promise.all([
-      transcibeFile(tempFlacPath, data.langSource, socket, false).catch(
-        console.error
-      ),
-      translateFile(
-        tempFlacPath,
-        data.langSource,
-        data.langTarget,
-        socket,
-        false
-      ).catch(console.error),
-    ])
-    .then((resp) => {
-      socket.emit('session-complete')
-      console.log('    Translation & Transcription complete')
-      return resp
-    })
-    .catch(() => {
-      console.error;
-      socket.emit('error', 'could not translate session audio');
-    })
-    .then(([translationObj, transciptionObj]) => {
-      const sessionRecord = {
-        user: data.userUID,
-        langSource: data.langSource,
-        langTarget: data.langTarget,
-        ...translationObj,
-        ...transciptionObj,
-        convertElapsedTime: conversionTime - receivedTime,
-        serverElapsedTime: Date.now() - receivedTime,
-        date: Date.now()
-      };
-      return sessionRecord
-    })
-    .then((session) => {
-      return db.collection('TranslateSession')
-              .doc(`${data.userUID}-${session.date}`)
-              .set(session)
-    }).then(() => console.log("    Saved to Google Firestore"))
-    .catch(console.error)
-  });
-});
+io.of('/audio')
+  .use(loggingMiddleware)
+  .use(socketHandlers.audio)
+  
+  
