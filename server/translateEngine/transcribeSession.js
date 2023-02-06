@@ -37,11 +37,10 @@ class GoogleTranscribeSession {
             );
           callback({
             transcription: transcript,
-            transciptionConfidence: data.results[0].alternatives[0].confidence,
+            confidence: data.results[0].alternatives[0].confidence,
             transcribeElapsedTime: Date.now() - this.startTime,
           });
         } else {
-          console.log(transcript);
           if (clientSocket) {
             clientSocket.emit('partial-transcription', transcript);
           }

@@ -5,6 +5,8 @@ const express = require('express');
 const morgan = require('morgan');
 const { Server } = require('socket.io');
 
+const db = require('./dbFirebase')
+
 const translateFile = require('./translateEngine/translateSession');
 const transcibeFile = require('./translateEngine/transcribeSession');
 const textTranslateString = require('./translateEngine/textTranslateSession');
@@ -39,11 +41,18 @@ io.on('connection', (socket) => {
 
   socket.on('audio', async (data) => {
     const receivedTime = Date.now();
-    const tempFlacPath = await AudioConversion(
-      data.audioData,
-      './audio/tempM4A.m4a',
-      './audio/serverSaved.flac'
-    );
+    let tempFlacPath 
+    try {
+      tempFlacPath = await AudioConversion(
+        data.audioData,
+        './audio/tempM4A.m4a',
+        './audio/serverSaved.flac'
+      );
+      console.log('    Audio file was converted to .flac format successfully');
+    } catch(err) {
+      socket.emit('error', 'problem with sent audio file')
+      throw new Error('audio could not be converted')
+    }
     const conversionTime = Date.now();
 
     Promise.all([
@@ -58,24 +67,34 @@ io.on('connection', (socket) => {
         false
       ).catch(console.error),
     ])
-      .then(([translationObj, transciptionObj]) => {
-        const sessionRecord = {
-          user: socket.id,
-          langSource: data.langSource,
-          langTarget: data.langTarget,
-          ...translationObj,
-          ...transciptionObj,
-          convertElapsedTime: conversionTime - receivedTime,
-          serverElapsedTime: Date.now() - receivedTime,
-        };
-
-        console.log(JSON.stringify(sessionRecord));
-      })
-      .then(() => socket.emit('session-complete'))
-      .catch(() => {
-        console.error;
-        socket.emit('session-error');
-      });
+    .then((resp) => {
+      socket.emit('session-complete')
+      console.log('    Translation & Transcription complete')
+      return resp
+    })
+    .catch(() => {
+      console.error;
+      socket.emit('error', 'could not translate session audio');
+    })
+    .then(([translationObj, transciptionObj]) => {
+      const sessionRecord = {
+        user: socket.id,
+        langSource: data.langSource,
+        langTarget: data.langTarget,
+        ...translationObj,
+        ...transciptionObj,
+        convertElapsedTime: conversionTime - receivedTime,
+        serverElapsedTime: Date.now() - receivedTime,
+        date: Date.now()
+      };
+      return sessionRecord
+    })
+    .then((session) => {
+      return db.collection('TranslateSession')
+              .doc(`${session.user}-${session.date}`)
+              .set(session)
+    }).then(() => console.log("    Saved to Google Firestore"))
+    .catch(console.error)
   });
 
   socket.on('text', async (data) => {

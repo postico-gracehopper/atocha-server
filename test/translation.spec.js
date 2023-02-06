@@ -62,6 +62,8 @@ const m4aReq = () => {
 //     })
 // }
 
+if (require.main === module){
+    setTimeout(m4aReq, 1000)
+}
 
-setTimeout(m4aReq, 1000)
-// setTimeout(flacReq, 10000)
+module.exports = m4aReq
