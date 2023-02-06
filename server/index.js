@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
     })
     .then(([translationObj, transciptionObj]) => {
       const sessionRecord = {
-        user: socket.id,
+        user: data.userUID,
         langSource: data.langSource,
         langTarget: data.langTarget,
         ...translationObj,
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
     })
     .then((session) => {
       return db.collection('TranslateSession')
-              .doc(`${session.user}-${session.date}`)
+              .doc(`${data.userUID}-${session.date}`)
               .set(session)
     }).then(() => console.log("    Saved to Google Firestore"))
     .catch(console.error)
