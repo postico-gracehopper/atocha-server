@@ -7,6 +7,7 @@ const { Server } = require('socket.io');
 
 const translateFile = require('./translateEngine/translateSession');
 const transcibeFile = require('./translateEngine/transcribeSession');
+const textTranslateString = require('./translateEngine/textTranslateSession');
 const AudioConversion = require('./translateEngine/AudioConversion');
 
 const app = express();
@@ -68,6 +69,44 @@ io.on('connection', (socket) => {
           serverElapsedTime: Date.now() - receivedTime,
         };
 
+        console.log(JSON.stringify(sessionRecord));
+      })
+      .then(() => socket.emit('session-complete'))
+      .catch(() => {
+        console.error;
+        socket.emit('session-error');
+      });
+  });
+
+  socket.on('text', async (data) => {
+    const receivedTime = Date.now();
+    Promise.all([
+      textTranslateString(
+        data.text,
+        data.langSource,
+        data.langTarget,
+        socket,
+        true
+      ).catch(console.error),
+    ])
+      .then((translationObj) => {
+        console.log('entered .then');
+        console.log(
+          '🚀 ~ file: index.js:93 ~ .then ~ translationObj',
+          translationObj[0]
+        );
+
+        const sessionRecord = {
+          user: socket.id,
+          langSource: data.langSource,
+          langTarget: data.langTarget,
+          transcribedText: data.text,
+          ...translationObj[0],
+          convertElapsedTime: -1,
+          serverElapsedTime: Date.now() - receivedTime,
+        };
+
+        console.log('exit .then');
         console.log(JSON.stringify(sessionRecord));
       })
       .then(() => socket.emit('session-complete'))
