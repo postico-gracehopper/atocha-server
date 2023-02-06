@@ -4,17 +4,15 @@ const { getAuth } = require('firebase-admin/auth')
 
 
 router.use(async (req, res, next) => {
-  console.log("here!")
   try {
     const { auth } = req.headers
-    console.log('authorization', auth)
     const uid = await getAuth().verifyIdToken(auth)
-    console.log(uid)
+    req.uid = uid
+    next()
   } catch(err) {
     console.log(err)
-    console.log("verify failed!!")
     err.status = 404
-    err.message = "!! could not access using firebase"
+    err.message = "User could not be verified through Google Firebase"
     next(err)
   }
 })

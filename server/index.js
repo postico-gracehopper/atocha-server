@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const { Server } = require('socket.io');
 const socketHandlers = require("./socketAPI")
 
-const {db, fireAuth} = require('./dbFirebase')
+const { getAuth } = require('firebase-admin/auth')
 
 const app = express();
 
@@ -35,19 +35,16 @@ const server = app.listen(port, () =>
 
 const io = new Server(server);
 
-const loggingMiddleware = (s, next) => {
-  console.log(`WS: dest: ${s.adapter.nsp.name}, socket: ${s.id}`)
-  next()
-  // Example of sending back an error
-  // const e = new Error("thats not allowed")
-  // next(e)
-}
+io.use(socketHandlers.middleware.logger)
+  .use(socketHandlers.middleware.checkForGoogleIDToken)
 
 io.of('/audio')
-  .use(loggingMiddleware)
+  .use(socketHandlers.middleware.checkForGoogleIDToken)
+  .use(socketHandlers.middleware.logger)
   .use(socketHandlers.audio)
 
 io.of('/text')
-  .use(loggingMiddleware)
+  .use(socketHandlers.middleware.checkForGoogleIDToken)
+  .use(socketHandlers.middleware.logger)
   .use(socketHandlers.text)
   

@@ -40,20 +40,20 @@ module.exports = function handleAudio(socket, next){
             console.log('    Translation & Transcription complete')
             return resp
         })
-        .catch(() => {
-            console.error;
+        .catch((err) => {
+            console.error(err);
             socket.emit('error', 'could not translate session audio');
         })
         .then(([translationObj, transciptionObj]) => {
             const sessionRecord = {
-            user: data.userUID || socket.id,
-            langSource: data.langSource,
-            langTarget: data.langTarget,
-            ...translationObj,
-            ...transciptionObj,
-            convertElapsedTime: conversionTime - receivedTime,
-            serverElapsedTime: Date.now() - receivedTime,
-            date: Date.now()
+                user: data.userUID || socket.id,
+                langSource: data.langSource,
+                langTarget: data.langTarget,
+                ...translationObj,
+                ...transciptionObj,
+                convertElapsedTime: conversionTime - receivedTime,
+                serverElapsedTime: Date.now() - receivedTime,
+                date: Date.now()
             };
             return sessionRecord
         })
