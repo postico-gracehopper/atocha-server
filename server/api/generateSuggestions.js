@@ -21,18 +21,19 @@ router.post('/', async (req, res, next) => {
   const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
-  function generateVocab(lang1, lang2, messages) {
-    return `List 8 ${lang1} words related to the below message. Follow each vocab word with its ${lang2}. None of these pairs should be cognates. List only the vocab words, no language labels. Line break for each new ${lang1} word.
-    Message: ${messages}
-    `;
+  function generateSuggestions(inputLang, outputLang, conversation) {
+    return `I'm having a conversation with someone in ${inputLang} and ${outputLang}. Brainstorm three ideas to continue: ${conversation}.
+    
+    The ideas should include both ${inputLang} and ${outputLang}. The answer should be formatted like this. Do not include a leading number: 
+    <${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>`;
   }
 
   try {
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: generateVocab(inputLang, outputLang, conversation),
+      prompt: generateSuggestions(inputLang, outputLang, conversation),
       temperature: 0.85,
-      max_tokens: 200,
+      max_tokens: 250,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
