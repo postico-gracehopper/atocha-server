@@ -5,7 +5,6 @@ const getAllTokens = require("./getTokens.spec")
 
 
 async function probeSocketAPIRoutes(){
-    const serverBasePath = "http://localhost:3000/"
     const {tokenUser, tokenAdmin, badToken } = await getAllTokens()
     const tokens= [{tName: "no token", token: null, expect: [false, false, false]}, 
                     {tName: "bad token" , token: badToken, expect: [false, false, false]},

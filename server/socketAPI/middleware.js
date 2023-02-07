@@ -9,7 +9,7 @@ async function checkForGoogleIDToken(clientSocket, next){
       next()
     } catch(err){
       err.status = 404
-      err.message = "Socket connection error: user could not be verified through Google Firebase"
+      err.message = "Could not verify user: please include {auth: {token: <GoogleIDTokenString>}} in future request"
       next(err)
     }
   }

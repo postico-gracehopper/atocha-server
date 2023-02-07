@@ -12,7 +12,7 @@ router.use(async (req, res, next) => {
   } catch(err) {
     console.log(err)
     err.status = 404
-    err.message = "User could not be verified through Google Firebase"
+    err.message = "Could not verify user: please include {headers: {auth: <GoogleIDTokenString>}} in request"
     next(err)
   }
 })

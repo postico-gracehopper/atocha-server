@@ -6,8 +6,6 @@ const morgan = require('morgan');
 const { Server } = require('socket.io');
 const socketHandlers = require("./socketAPI")
 
-const { getAuth } = require('firebase-admin/auth')
-
 const app = express();
 
 app
@@ -24,6 +22,7 @@ app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
+// error catcher
 app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
@@ -35,7 +34,7 @@ const server = app.listen(port, () =>
 
 const io = new Server(server);
 
-io  .use(socketHandlers.middleware.checkForGoogleIDToken)
+io.use(socketHandlers.middleware.checkForGoogleIDToken) // checkForGoogleIDToken needs to come before logger, as logger depends on user
   .use(socketHandlers.middleware.logger)
   .on("connect", (s) => s.emit("hello from server"))
 
