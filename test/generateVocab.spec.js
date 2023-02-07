@@ -1,12 +1,14 @@
-const axios = require('axios')
+const axios = require("axios");
+import { uri } from "../constants";
 
-axios.post('http://localhost:3000/api/generateVocab',
-    {
-        inputLang: "English",
-        outputLang: "Spanish",
-        conversation: "outdoors activities"
-    }   
-).then(console.log).catch(err => {
-    console.log("axios post request complete")
-    console.log(err.message)
-})
+axios
+  .post(`${uri}/api/generateVocab`, {
+    inputLang: "English",
+    outputLang: "Spanish",
+    conversation: "outdoors activities",
+  })
+  .then(console.log)
+  .catch((err) => {
+    console.log("axios post request complete");
+    console.log(err.message);
+  });
