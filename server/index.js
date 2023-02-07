@@ -35,8 +35,9 @@ const server = app.listen(port, () =>
 
 const io = new Server(server);
 
-io.use(socketHandlers.middleware.logger)
-  .use(socketHandlers.middleware.checkForGoogleIDToken)
+io  .use(socketHandlers.middleware.checkForGoogleIDToken)
+  .use(socketHandlers.middleware.logger)
+  .on("connect", (s) => s.emit("hello from server"))
 
 io.of('/audio')
   .use(socketHandlers.middleware.checkForGoogleIDToken)

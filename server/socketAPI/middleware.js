@@ -3,9 +3,9 @@ const { getAuth } = require('firebase-admin/auth')
 
 async function checkForGoogleIDToken(clientSocket, next){
     try {
-      const { token } = clientSocket.handshake.auth
+      const { token } = clientSocket?.handshake?.auth
       const uid = await getAuth().verifyIdToken(token)
-      clientSocket.userUID = uid
+      clientSocket.user = uid
       next()
     } catch(err){
       err.status = 404
@@ -15,7 +15,7 @@ async function checkForGoogleIDToken(clientSocket, next){
   }
   
   function loggingMiddleware(clientSocket, next) {
-    console.log(`WS: dest: ${clientSocket.adapter.nsp.name}, socket: ${clientSocket.id}`)
+    console.log(`socket - dest: ${clientSocket.adapter.nsp.name}, user: ${clientSocket.user.email}`)
     next()
     // Example of sending back an error
     // const e = new Error("thats not allowed")

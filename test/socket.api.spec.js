@@ -14,17 +14,28 @@ async function probeSocketAPIRoutes(){
 
 
     const extensions = ['', 'audio', 'text']
-    const endpoints = extensions.map(ext => serverBasePath + ext)
+    const endpoints = [
+        'http://localhost:3000/',
+        'http://localhost:3000/audio',
+        'http://localhost:3000/text'
+      ]
+      
+    console.log("probeSocketAPIRoutes: 3x endpoints (/, /text, /audio) and 4x tokens (none, bad, user, admin)")
     endpoints.forEach((endpoint, index) => {
         tokens.forEach(tokenObj => {
             let result
-            const socket = io(endpoint, {auth: {token: tokenObj.token}})
+            const socket = io.connect(endpoint, {auth: {token: tokenObj.token || null}})
             socket.on("connect", () => {
                 result = '🟩' 
-                console.log(`    (accessExpected) ${tokenObj.expect[index] ? '🟩' :  '🟥' } ${result} (result) ${tokenObj.tName} ext:${extensions[index]}`)
+                console.log(`    (accessExpected) ${tokenObj.expect[index] ? '🟩' :  '🟥' } ${result} (result) ${tokenObj.tName} ext: /${extensions[index]}`)
                 socket.disconnect()
             })
             socket.on("connect_error", () => {
+                result = '🟥'
+                console.log(`    (accessExpected) ${tokenObj.expect[index] ? '🟩' :  '🟥' } ${result} (result) ${tokenObj.tName} ext: /${extensions[index]}`)
+                socket.disconnect()
+            })
+            socket.on("error", () => {
                 result = '🟥'
                 console.log(`    (accessExpected) ${tokenObj.expect[index] ? '🟩' :  '🟥' } ${result} (result) ${tokenObj.tName} ext: /${extensions[index]}`)
                 socket.disconnect()

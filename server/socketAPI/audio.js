@@ -59,7 +59,7 @@ module.exports = function handleAudio(socket, next){
         })
         .then((sessionRecord) => {
             return db.collection('TranslateSession')
-                    .doc(`${data.userUID}-${sessionRecord.date}`)
+                    .doc(`${socket.user.uid}-${sessionRecord.date}`)
                     .set(sessionRecord)
         }).then(() => console.log("    Saved to Google Firestore"))
         .catch(console.error)
