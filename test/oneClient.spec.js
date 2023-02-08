@@ -4,15 +4,16 @@ const getAllTokens = require("./getTokens.spec")
 
 
 
-const m4aReq = async () => {
+const m4aReq = async (detailLog=false, socketName="") => {
+    const socketLabel = socketName === "" ? String(Math.random()*10000).slice(0,4) : socketName
     const tokens = await getAllTokens()
     const socket = io("http://127.0.0.1:3000/audio", {auth: {token: tokens.tokenUser}}); 
     socket.on("connect", () => {
-        console.log("connected to socket server ")
+        console.log(`s:${socketLabel} is connected to the server`)
         
-        const testM4a = fs.readFileSync('/Users/blakebequette/fullstack/atocha/atocha-server/test/sample.m4a', {encoding: 'base64'})
+        const testM4a = fs.readFileSync('./test/audioSamples/sample.m4a', {encoding: 'base64'})
 
-        socket.volatile.emit("audio", 
+        socket.emit("session", 
 
         {
             langSource: "en-US",
@@ -22,24 +23,24 @@ const m4aReq = async () => {
         })
     })
 
-    socket.on("partial-translation", (partialTranslation) => {
-       console.log(`   Partial translation: ${partialTranslation.translation.slice(0,30)}`)
-    })
-
+    if (detailLog){
+        socket.on("partial-translation", (partialTranslation) => {
+            console.log(`   Partial translation: ${partialTranslation.translation.slice(0,30)}`)
+        })
+    
+        socket.on("partial-transcription", (partialTranscription) => {
+            console.log(`   Partial transcription: ${partialTranscription}`)
+        })
+    }
+        
+    
     socket.on("final-translation", (finalTranslation) => {
-            console.log('Received a final translation:')
-            console.log(finalTranslation.translation)
+        console.log(`    s:${socketLabel} final translation: ${finalTranslation.translation.slice(0,50)}`)
     })
-
-    socket.on("partial-transcription", (partialTranscription) => {
-       console.log(`   Partial transcription: ${partialTranscription}`)
-    })
-
+    
     socket.on("final-transcription", (finalTranscription) => {
-        console.log('Received a final transcription:')
-        console.log(finalTranscription)
+        console.log(`    s:${socketLabel} final translation: ${finalTranscription.slice(0, 50)}`)
     })
-
 
     socket.on("connect_error", (err) => {
         console.log(err.message)
@@ -50,7 +51,7 @@ const m4aReq = async () => {
 
 
 if (require.main === module){
-    setTimeout(m4aReq, 1000)
+    setTimeout(() => m4aReq(), 1000)
 }
 
 module.exports = m4aReq

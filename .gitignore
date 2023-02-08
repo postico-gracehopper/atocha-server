@@ -37,3 +37,4 @@ app.yaml
 translate-config.json
 *translate-config.json
 
+fireBaseClient.json
