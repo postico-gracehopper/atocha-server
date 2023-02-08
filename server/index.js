@@ -6,25 +6,24 @@ const morgan = require('morgan');
 const { Server } = require('socket.io');
 const socketHandlers = require("./socketAPI")
 
+
 const app = express();
 
 app
-  .use(express.static(path.join(__dirname, '..', 'public')))
+  .use(express.static(path.join(__dirname, "..", "public")))
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
-  .use(morgan('dev'));
+  .use(morgan("dev"));
 
+app.use("/api", require("./api"));
 
-
-app.use('/api', require('./api'));
-
-app.use('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+app.use("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 // error catcher
 app.use((err, req, res, next) => {
-  res.status(err.status || 500).send(err.message || 'Internal server error.');
+  res.status(err.status || 500).send(err.message || "Internal server error.");
 });
 
 const server = app.listen(port, () =>
@@ -47,4 +46,3 @@ io.of('/text')
   .use(socketHandlers.middleware.checkForGoogleIDToken)
   .use(socketHandlers.middleware.logger)
   .use(socketHandlers.text)
-  

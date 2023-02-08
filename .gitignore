@@ -30,5 +30,10 @@ audio
 fireBaseConfig.js
 fireBaseConfig.json
 *fireBaseConfig.json
+firebaseConfig.json
+*firebaseConfig.json
 
 app.yaml
+translate-config.json
+*translate-config.json
+
