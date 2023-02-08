@@ -15,10 +15,9 @@ router.post("/", async (req, res, next) => {
     // translating a single piece of text, or an array of strings for translating
     // multiple texts.
     console.log("In the try block");
-    console.log("text is", text);
     console.log("target is", target);
     let [translations] = await translate.translate(text, target);
-    console.log("translations arrre", translations);
+    console.log("translations arrre", translations, " and text is", text);
     translations = Array.isArray(translations) ? translations : [translations];
     let rez = [];
     translations.forEach((translation) => {

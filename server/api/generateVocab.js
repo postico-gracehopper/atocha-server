@@ -21,16 +21,15 @@ router.post('/', async (req, res, next) => {
   const conversation = req.body.conversation;
 
   function generateVocab(lang1, messages) {
-    return `Generate six useful ${lang1} words related to the themes of the below message. The new, generated words shouldn't appear in the original message. Don't number the results. No definitions.
-    Message: ${messages}
-    `;
+    return `Generate three useful ${lang1} words and two idiomatic phrases related to the below message. The five results should not be numbered. They should not include English definitions. Separate each result with a comma.
+    Message: ${messages}`;
   }
 
   try {
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt: generateVocab(inputLang, conversation),
-      temperature: 0.85,
+      temperature: 0.8,
       max_tokens: 200,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
