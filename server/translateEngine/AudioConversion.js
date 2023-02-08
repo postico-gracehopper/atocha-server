@@ -21,6 +21,7 @@ const AudioConversion = (data, inFilename, outFileName) => {
     ]);
   
     ffmpeg.on('exit', (code) => {
+      console.log("converted with the following code", code)
       if (code === 0) {
         resolve(outFileName)
       } else {

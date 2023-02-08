@@ -18,13 +18,16 @@ router.use(async (req, res, next) => {
 })
 
 
-router.use("/checkDocker", require("./checkDocker"));
-router.use("/generateVocab", require("./generateVocab"));
-router.use("/translateString", require("./translateString"));
+
+router.use('/checkDocker', require('./checkDocker'));
+router.use('/generateVocab', require('./generateVocab'));
+router.use('/generateTeacher', require('./generateTeacher'));
+router.use('/generateSuggestions', require('./generateSuggestions'));
+router.use('/translateString', require('./translateString'));
 
 // catch all the Not Found's from the api
 router.use((req, res, next) => {
-  const error = new Error("Not Found");
+  const error = new Error('Not Found');
   error.status = 404;
   next(error);
 });

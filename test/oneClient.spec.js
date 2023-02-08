@@ -4,7 +4,6 @@ const getAllTokens = require("./getTokens.spec")
 
 
 
-// Simulate a M4a translation request
 const m4aReq = async () => {
     const tokens = await getAllTokens()
     const socket = io("http://127.0.0.1:3000/audio", {auth: {token: tokens.tokenUser}}); 
@@ -12,14 +11,16 @@ const m4aReq = async () => {
         console.log("connected to socket server ")
         
         const testM4a = fs.readFileSync('/Users/blakebequette/fullstack/atocha/atocha-server/test/sample.m4a', {encoding: 'base64'})
-        socket.emit("session", 
+
+        socket.volatile.emit("audio", 
+
         {
             langSource: "en-US",
             langTarget: "es-ES",
             audioData: testM4a,
             fileFormat: "m4a"
         })
-        })
+    })
 
     socket.on("partial-translation", (partialTranslation) => {
        console.log(`   Partial translation: ${partialTranslation.translation.slice(0,30)}`)
@@ -38,6 +39,7 @@ const m4aReq = async () => {
         console.log('Received a final transcription:')
         console.log(finalTranscription)
     })
+
 
     socket.on("connect_error", (err) => {
         console.log(err.message)
