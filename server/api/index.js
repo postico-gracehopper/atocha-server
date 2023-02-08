@@ -6,6 +6,7 @@ router.use('/checkDocker', require('./checkDocker'));
 router.use('/generateVocab', require('./generateVocab'));
 router.use('/generateTeacher', require('./generateTeacher'));
 router.use('/generateSuggestions', require('./generateSuggestions'));
+router.use('/translateString', require('./translateString'));
 
 // catch all the Not Found's from the api
 router.use((req, res, next) => {
