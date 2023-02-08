@@ -1,16 +1,17 @@
-FROM node:18
+FROM node:18-alpine
 
-RUN apt-get update && \
-    apt install ffmpeg -y
+RUN apk update && \
+    apk add ffmpeg
 
 WORKDIR /app
 
-COPY package*.json .
+ENV PORT 8080
+ENV HOST 0.0.0.0
 
-RUN npm install
+COPY package*.json ./
+
+RUN npm install --omit=dev
 
 COPY . .
 
-EXPOSE 3000
-
-CMD ["node", "./server"]
+CMD ["npm", "start"]

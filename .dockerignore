@@ -1,3 +1,7 @@
 npm_modules
 npm-debug.log
 audio/*
+scripts
+node_modules
+test
+src
