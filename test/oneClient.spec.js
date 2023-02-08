@@ -5,12 +5,12 @@ const fs = require("fs")
 
 // Simulate a M4a translation request
 const m4aReq = () => {
-    const socket = io("http://127.0.0.1:3000"); 
+    const socket = io("http://localhost:3000") //"https://atocha.up.railway.app"); 
     socket.on("connect", () => {
         console.log("connected to socket server ")
         
         const testM4a = fs.readFileSync('/Users/blakebequette/fullstack/atocha/atocha-server/test/sample.m4a', {encoding: 'base64'})
-        socket.emit("audio", 
+        socket.volatile.emit("audio", 
         {
             langSource: "en-US",
             langTarget: "es-ES",
@@ -36,6 +36,8 @@ const m4aReq = () => {
         console.log('Received a final transcription:')
         console.log(finalTranscription)
     })
+
+    socket.on("error", err => console.log(err))
 
     setTimeout(() => socket.close(), 10000)
 }
