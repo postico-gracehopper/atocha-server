@@ -5,7 +5,7 @@ const fs = require("fs")
 
 // Simulate a M4a translation request
 const m4aReq = () => {
-    const socket = io("http://localhost:3000") //"https://atocha.up.railway.app"); 
+    const socket = io("https://atocha.up.railway.app"); //"http://localhost:3000") //
     socket.on("connect", () => {
         console.log("connected to socket server ")
         
