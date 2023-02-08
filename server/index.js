@@ -51,7 +51,8 @@ io.on("connection", (socket) => {
       console.log("    Audio file was converted to .flac format successfully");
     } catch (err) {
       socket.emit("error", "problem with sent audio file");
-      throw new Error("audio could not be converted");
+      console.log("audio could not be converted", err);
+      return
     }
     const conversionTime = Date.now();
 
@@ -78,7 +79,7 @@ io.on("connection", (socket) => {
       })
       .then(([translationObj, transciptionObj]) => {
         const sessionRecord = {
-          user: data.userUID,
+          user: data.userUID || socket.id,
           langSource: data.langSource,
           langTarget: data.langTarget,
           ...translationObj,
