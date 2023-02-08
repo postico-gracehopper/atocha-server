@@ -18,19 +18,21 @@ router.post('/', async (req, res, next) => {
   }
 
   const inputLang = req.body.inputLang;
+  const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
-  function generateVocab(lang1, messages) {
-    return `Generate three useful ${lang1} words and two idiomatic phrases related to the below message. The five results should not be numbered. They should not include English definitions. Separate each result with a comma.
-    Message: ${messages}`;
+  function generateSuggestions(inputLang, outputLang, conversation) {
+    return `I'm having a conversation with someone in ${inputLang} and ${outputLang}. Suggest three natural, chatty responses to the prompt. The first should be positive. The second should also be positive, but tease the asker or make a joke. The third should respond negatively but stay warm and polite. All three should be brief. 
+    The ideas should include both ${inputLang} and ${outputLang}. The answer should be formatted like this. Do not include a leading number: <${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>
+    Prompt: ${conversation}.`;
   }
 
   try {
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: generateVocab(inputLang, conversation),
-      temperature: 0.8,
-      max_tokens: 200,
+      prompt: generateSuggestions(inputLang, outputLang, conversation),
+      temperature: 0.85,
+      max_tokens: 250,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {

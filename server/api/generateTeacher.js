@@ -18,20 +18,25 @@ router.post('/', async (req, res, next) => {
   }
 
   const inputLang = req.body.inputLang;
+  const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
-  function generateVocab(lang1, messages) {
-    return `Generate three useful ${lang1} words and two idiomatic phrases related to the below message. The five results should not be numbered. They should not include English definitions. Separate each result with a comma.
-    Message: ${messages}`;
+  function generateTeacher(inputLang, outputLang, conversation) {
+    // return `I'm an ${inputLang} speaker trying to learn ${outputLang}. Act like a teacher and explain the words in this sentence to me in ${inputLang}:
+    // ${conversation}`;
+
+    return `I’m an ${inputLang} speaker trying to learn ${outputLang}. You are my ${outputLang} teacher using the message below as an example. Begin your response with a sentence in ${inputLang} describing the prompt’s grammar with examples. If there are common ${outputLang} idioms in the message, explain them. Do not translate the message. If the message does not involve a concept specific to ${outputLang} culture, say nothing further. If it does, end your response with a sentence explaining the ${outputLang} cultural context.
+    Prompt: ${conversation}`;
   }
 
   try {
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: generateVocab(inputLang, conversation),
-      temperature: 0.8,
-      max_tokens: 200,
+      prompt: generateTeacher(inputLang, outputLang, conversation),
+      temperature: 0.85,
+      max_tokens: 250,
     });
+    console.log('completion', completion.data.choices[0].text, '|');
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
     if (error.response) {
