@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
       })
       .then(([translationObj, transciptionObj]) => {
         const sessionRecord = {
-          user: data.userUID,
+          user: data.userUID || socket.id,
           langSource: data.langSource,
           langTarget: data.langTarget,
           ...translationObj,
