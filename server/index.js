@@ -4,8 +4,13 @@ const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const { Server } = require('socket.io');
-const socketHandlers = require("./socketAPI")
 
+const db = require('./dbFirebase');
+
+const translateFile = require('./translateEngine/translateSession');
+const transcibeFile = require('./translateEngine/transcribeSession');
+const textTranslateString = require('./translateEngine/textTranslateSession');
+const AudioConversion = require('./translateEngine/AudioConversion');
 
 const app = express();
 
@@ -21,7 +26,6 @@ app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// error catcher
 app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
@@ -30,20 +34,100 @@ const server = app.listen(port, () =>
   console.log(`\nlistening on port ${port}\n`)
 );
 
-
-
 const io = new Server(server);
 
-io.use(socketHandlers.middleware.checkForGoogleIDToken) // checkForGoogleIDToken needs to come before logger, as logger depends on user
-  .use(socketHandlers.middleware.logger)
-  .on("connect", (s) => s.emit("hello from server"))
+io.on('connection', (socket) => {
+  console.log('conneted to socket', socket.id);
 
-io.of('/audio')
-  .use(socketHandlers.middleware.checkForGoogleIDToken)
-  .use(socketHandlers.middleware.logger)
-  .use(socketHandlers.audio)
+  socket.on('audio', async (data) => {
+    const receivedTime = Date.now();
+    let tempFlacPath;
+    try {
+      tempFlacPath = await AudioConversion(
+        data.audioData,
+        './audio/tempM4A.m4a',
+        './audio/serverSaved.flac'
+      );
+      console.log('    Audio file was converted to .flac format successfully');
+    } catch (err) {
+      socket.emit('error', 'problem with sent audio file');
+      console.log('audio could not be converted', err);
+      return;
+    }
+    const conversionTime = Date.now();
 
-io.of('/text')
-  .use(socketHandlers.middleware.checkForGoogleIDToken)
-  .use(socketHandlers.middleware.logger)
-  .use(socketHandlers.text)
+    Promise.all([
+      transcibeFile(tempFlacPath, data.langSource, socket, false).catch(
+        console.error
+      ),
+      translateFile(
+        tempFlacPath,
+        data.langSource,
+        data.langTarget,
+        socket,
+        false
+      ).catch(console.error),
+    ])
+      .then((resp) => {
+        socket.emit('session-complete');
+        console.log('    Translation & Transcription complete');
+        return resp;
+      })
+      .catch(() => {
+        console.error;
+        socket.emit('error', 'could not translate session audio');
+      })
+      .then(([translationObj, transciptionObj]) => {
+        const sessionRecord = {
+          user: data.userUID || socket.id,
+          langSource: data.langSource,
+          langTarget: data.langTarget,
+          ...translationObj,
+          ...transciptionObj,
+          convertElapsedTime: conversionTime - receivedTime,
+          serverElapsedTime: Date.now() - receivedTime,
+          date: Date.now(),
+        };
+        return sessionRecord;
+      })
+      .then((session) => {
+        return db
+          .collection('TranslateSession')
+          .doc(`${data.userUID}-${session.date}`)
+          .set(session);
+      })
+      .then(() => console.log('    Saved to Google Firestore'))
+      .catch(console.error);
+  });
+
+  socket.on('text', async (data) => {
+    const receivedTime = Date.now();
+    Promise.all([
+      textTranslateString(
+        data.text,
+        data.langSource,
+        data.langTarget,
+        socket,
+        true
+      ).catch(console.error),
+    ])
+      .then((translationObj) => {
+        const sessionRecord = {
+          user: data.userUID || socket.id,
+          langSource: data.langSource,
+          langTarget: data.langTarget,
+          transcribedText: data.text,
+          ...translationObj[0],
+          convertElapsedTime: -1,
+          serverElapsedTime: Date.now() - receivedTime,
+        };
+
+        console.log(JSON.stringify(sessionRecord));
+      })
+      .then(() => socket.emit('session-complete'))
+      .catch(() => {
+        console.error;
+        socket.emit('session-error');
+      });
+  });
+});
