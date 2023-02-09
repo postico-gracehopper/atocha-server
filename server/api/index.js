@@ -11,7 +11,7 @@ router.use(async (req, res, next) => {
     next()
   } catch(err) {
     console.log(err)
-    err.status = 404
+    err.status = 403
     err.message = "Could not verify user: please include {headers: {auth: <GoogleIDTokenString>}} in request"
     next(err)
   }
