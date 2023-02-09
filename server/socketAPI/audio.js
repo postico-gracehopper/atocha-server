@@ -28,11 +28,11 @@ module.exports = function handleAudio(socket, next){
             console.error
             ),
             translateFile(
-            tempFlacPath,
-            data.langSource,
-            data.langTarget,
-            socket,
-            false
+                tempFlacPath,
+                data.langSource,
+                data.langTarget,
+                socket,
+                false
             ).catch(console.error),
         ])
         .then((resp) => {
@@ -46,7 +46,7 @@ module.exports = function handleAudio(socket, next){
         })
         .then(([translationObj, transciptionObj]) => {
             const sessionRecord = {
-                user: data.userUID || socket.id,
+                user: socket.user.uid,
                 langSource: data.langSource,
                 langTarget: data.langTarget,
                 ...translationObj,

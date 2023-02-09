@@ -24,7 +24,7 @@ module.exports = function handleText(socket, next){
         })
         .then((translationObj) => {
             const sessionRecord = {
-                user: socket.id,
+                user: socket.user.uid,
                 langSource: data.langSource,
                 langTarget: data.langTarget,
                 transcribedText: data.text,

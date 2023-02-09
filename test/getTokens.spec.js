@@ -14,6 +14,8 @@ const BAD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkw
 const getTokenAdmin = async () => {
   try {
       const usr = await signInWithEmailAndPassword(auth, process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD)
+      console.log(JSON.stringify(usr))
+      console.log(Object.keys(usr))
       return usr._tokenResponse.idToken
   } catch(err){
       console.error(err)

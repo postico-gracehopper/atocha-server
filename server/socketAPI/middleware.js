@@ -9,6 +9,7 @@ async function checkForGoogleIDToken(clientSocket, next){
       clientSocket.user = uid
       next()
     } catch(err){
+      console.error(err)
       err.status = err.status || 404
       err.message = err.message || "Could not verify user: please include {auth: {token: <GoogleIDTokenString>}} in future request"
       next(err)
@@ -16,7 +17,7 @@ async function checkForGoogleIDToken(clientSocket, next){
   }
   
   function loggingMiddleware(clientSocket, next) {
-    console.log(`socket - dest: ${clientSocket.adapter.nsp.name}, user: ${clientSocket.user.email}`)
+    console.log(`socket - dest: ${clientSocket.adapter.nsp.name}, user: ${clientSocket.user.email || clientSocket.user.uid}`)
     next()
     // Example of sending back an error
     // const e = new Error("thats not allowed")
