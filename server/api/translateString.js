@@ -27,9 +27,9 @@ router.post("/", async (req, res, next) => {
     });
     res.status(200).send(rez);
   } catch (err) {
-    console.log(err)
-    console.log(err.status)
-    console.log(err.messge)
+    err.status = 500
+    err.message = "API with google text translate failed"
+    next(err)
     // if (error.response) {
     //   console.error(error.response, error.reponse.statusCode)
     //   console.error(error.response.status, error.response.data);
