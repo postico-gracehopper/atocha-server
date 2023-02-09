@@ -21,6 +21,7 @@ router.post('/', async (req, res, next) => {
   const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
+
   function generateSuggestions(inputLang, outputLang, conversation) {
     return `I'm having a conversation with someone in ${inputLang} and ${outputLang}. Suggest three natural, chatty responses to the prompt. The first should be positive. The second should also be positive, but tease the asker or make a joke. The third should respond negatively but stay warm and polite. All three should be brief. 
     The ideas should include both ${inputLang} and ${outputLang}. The answer should be formatted like this. Do not include a leading number: <${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>
@@ -28,6 +29,7 @@ router.post('/', async (req, res, next) => {
   }
 
   try {
+    if (!inputLang || !outputLang || !conversation) throw new Error("Need input language, output language, and conversation for generating suggestions")
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt: generateSuggestions(inputLang, outputLang, conversation),

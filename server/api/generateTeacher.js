@@ -30,6 +30,7 @@ router.post('/', async (req, res, next) => {
   }
 
   try {
+    if (!inputLang || !outputLang || !conversation) throw new Error("must provide an input language, output language, and conversation topic to teacher function")
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt: generateTeacher(inputLang, outputLang, conversation),

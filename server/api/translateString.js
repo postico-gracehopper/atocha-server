@@ -11,13 +11,8 @@ router.post("/", async (req, res, next) => {
   const text = req.body.text;
 
   try {
-    //   Translates the text into the target language. "text" can be a string for
-    // translating a single piece of text, or an array of strings for translating
-    // multiple texts.
-    console.log("In the try block");
-    console.log("target is", target);
+    if (!text || !target) throw new Error("must provide a target language and text to translate a string")
     let [translations] = await translate.translate(text, target);
-    console.log("translations arrre", translations, " and text is", text);
     translations = Array.isArray(translations) ? translations : [translations];
     let rez = [];
     translations.forEach((translation) => {

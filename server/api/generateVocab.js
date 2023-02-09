@@ -34,6 +34,7 @@ router.post('/', async (req, res, next) => {
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
+    if (!inputLang || !conversation) throw new Error("Must provide a input language and conversation topic to generate vocab")
     if (error.response) {
       console.error(error.response.status, error.response.data);
       res.status(error.response.status).json(error.response.data);
