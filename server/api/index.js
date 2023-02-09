@@ -18,7 +18,6 @@ router.use(async (req, res, next) => {
 })
 
 
-
 router.use('/checkDocker', require('./checkDocker'));
 router.use('/generateVocab', require('./generateVocab'));
 router.use('/generateTeacher', require('./generateTeacher'));
