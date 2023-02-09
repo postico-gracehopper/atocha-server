@@ -4,12 +4,13 @@ const { getAuth } = require('firebase-admin/auth')
 async function checkForGoogleIDToken(clientSocket, next){
     try {
       const { token } = clientSocket?.handshake?.auth
+      if (!token) throw new Error("No token provided")
       const uid = await getAuth().verifyIdToken(token)
       clientSocket.user = uid
       next()
     } catch(err){
-      err.status = 404
-      err.message = "Could not verify user: please include {auth: {token: <GoogleIDTokenString>}} in future request"
+      err.status = err.status || 404
+      err.message = err.message || "Could not verify user: please include {auth: {token: <GoogleIDTokenString>}} in future request"
       next(err)
     }
   }
