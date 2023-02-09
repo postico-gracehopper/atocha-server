@@ -19,7 +19,7 @@ module.exports = function handleAudio(socket, next){
             console.log('    Audio file was converted to .flac format successfully');
         } catch(err) {
             socket.emit('error', 'problem with sent audio file')
-            throw new Error('audio could not be converted')
+            console.log('audio could not be converted, error', err)
         }
         const conversionTime = Date.now();
     
