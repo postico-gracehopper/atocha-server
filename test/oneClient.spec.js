@@ -11,7 +11,7 @@ const m4aReq = async (detailLog=false, socketName="") => {
         const tokens = await getAllTokens()
         const socket = io("http://127.0.0.1:3000/audio", {auth: {token: tokens.tokenUser}}); 
         socket.on("connect", () => {
-            console.log(`s:${socketLabel} is connected to the server`)
+            console.log(`skt:${socketLabel} is connected to the server`)
             
             const testM4a = fs.readFileSync('./test/audioSamples/sample.m4a', {encoding: 'base64'})
     
@@ -37,19 +37,19 @@ const m4aReq = async (detailLog=false, socketName="") => {
         
         
         socket.on("final-translation", (finalTranslation) => {
-            console.log(`    s:${socketLabel} final translation: ${finalTranslation.translation.slice(0,50)}`)
+            console.log(`    skt:${socketLabel} final translation: ${finalTranslation.translation.slice(0,50)}`)
             result.tgt = finalTranslation.translation
             checkIfCompleteAndResolve()
         })
         
         socket.on("final-transcription", (finalTranscription) => {
-            console.log(`    s:${socketLabel} final translation: ${finalTranscription.slice(0, 50)}`)
+            console.log(`    skt:${socketLabel} final translation: ${finalTranscription.slice(0, 50)}`)
             result.src = finalTranscription
             checkIfCompleteAndResolve()
         })
     
         socket.on("connect_error", (err) => {
-            console.log(err.message)
+            console.log('🟥', err.message)
         })
 
         function checkIfCompleteAndResolve(){
@@ -58,8 +58,8 @@ const m4aReq = async (detailLog=false, socketName="") => {
                 && typeof result.src === 'string'
                 && result.tgt.length > 2 
                 && result.src.length > 2){
-                    console.log(`s:${socketLabel} successful`)
-                    socket.close()
+                    console.log(`🟩 s:${socketLabel} successful`)
+                    socket.disconnect()
                     resolve(true)
                 }
         }

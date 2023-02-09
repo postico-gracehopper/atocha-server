@@ -26,7 +26,10 @@
     "start": "node server --ignore public",
     "build:watch": "npx webpack -w",
     "start:dev": "npm run build:watch & nodemon server --ignore public",
-    "test:oneClient": "node test/translation.spec.js"
+    "test:getTokens": "node test/getTokens.spec.js",
+    "test:socketAPI": "node test/socket.api.spec.js",
+    "test:oneClient": "node test/oneClient.spec.js",
+    "test:all": "npm run test:getTokens && npm run test:socketAPI && npm run test:oneClient"
   },
   "repository": {
     "type": "git",
