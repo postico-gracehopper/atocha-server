@@ -6,13 +6,14 @@ const { getAuth } = require('firebase-admin/auth')
 router.use(async (req, res, next) => {
   try {
     const { auth } = req.headers
+    if (!auth) throw new Error("Could not verify user: please include {headers: {auth: <GoogleIDTokenString>}} in request")
     const uid = await getAuth().verifyIdToken(auth)
     req.uid = uid
     next()
   } catch(err) {
     console.log(err)
     err.status = 403
-    err.message = "Could not verify user: please include {headers: {auth: <GoogleIDTokenString>}} in request"
+    err.message = err.message || "Google firebase could not verify user"
     next(err)
   }
 })
