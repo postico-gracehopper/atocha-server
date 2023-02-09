@@ -8,6 +8,7 @@ const openai = new OpenAIApi(configuration);
 const router = require('express').Router();
 
 router.post('/', async (req, res, next) => {
+  console.log("MODE IT HEREEEE")
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {

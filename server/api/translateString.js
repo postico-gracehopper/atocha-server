@@ -26,20 +26,24 @@ router.post("/", async (req, res, next) => {
       }
     });
     res.status(200).send(rez);
-  } catch (error) {
-    if (error.response) {
-      console.error(error.response.status, error.response.data);
-      res.status(error.response.status).json(error.response.data);
-    } else {
-      console.error(
-        `Error with Google translate request (vocab): ${error.message}`
-      );
-      res.status(500).json({
-        error: {
-          message: "An error occurred during your request.",
-        },
-      });
-    }
+  } catch (err) {
+    console.log(err)
+    console.log(err.status)
+    console.log(err.messge)
+    // if (error.response) {
+    //   console.error(error.response, error.reponse.statusCode)
+    //   console.error(error.response.status, error.response.data);
+    //   res.status(error.response.status).json(error.response.data);
+    // } else {
+    //   console.error(
+    //     `Error with Google translate request (vocab): ${error.message}`
+    //   );
+    //   res.status(500).json({
+    //     error: {
+    //       message: "An error occurred during your request.",
+    //     },
+    //   });
+    // }
   }
 });
 
