@@ -11,7 +11,7 @@ router.post("/", async (req, res, next) => {
   const text = req.body.text;
 
   try {
-    if (!text || !target) throw new Error("must provide a target language and text to translate a string")
+    if (!text || !target) throw new Error("arguments")
     let [translations] = await translate.translate(text, target);
     translations = Array.isArray(translations) ? translations : [translations];
     let rez = [];
@@ -21,10 +21,13 @@ router.post("/", async (req, res, next) => {
       }
     });
     res.status(200).send(rez);
-  } catch (err) {
-    err.status = 500
-    err.message = "API with google text translate failed"
-    next(err)
+  } catch (error) {
+    if (error.message === "arguments"){
+      error.status = 400
+      error.message = "must include text and targetLang in the request body"
+    }
+    console.error(error)
+    next(error)
     // if (error.response) {
     //   console.error(error.response, error.reponse.statusCode)
     //   console.error(error.response.status, error.response.data);
