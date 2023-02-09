@@ -66,7 +66,7 @@ const m4aReq = async (detailLog=false, socketName="") => {
     
         setTimeout(() => {
             socket.close()
-        }, 10000)
+        }, 5000)
     }
     )}
 

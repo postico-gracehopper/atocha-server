@@ -4,24 +4,25 @@ require("dotenv").config()
 
 async function probeAPIRoutes(){
     const tokens = await getAllTokens()
-    const host = process.env.HOST === 'prod' ?  "crinkle" : "http://localhost:3000"
+    const host = process.env.MODE === 'prod' ?  process.env.DEPLOYED_URL : "http://localhost:3000"
     const reqObjects = [
+        {route: '', action: axios.get, user: tokens.tokenBad },
         {route: 'api/checkDocker', action: axios.get, user: tokens.tokenUser },
         {route: 'api/generateVocab', action: axios.post, user: tokens.tokenUser, body: {inputLang: "Spanish", conversation: "Gardening"}},
         {route: 'api/generateTeacher', action: axios.post, user: tokens.tokenUser, body: {inputLang: "English", outputLang: "French", conversation: "Pretend you're talking about what you might have for dinner."}},
         {route: 'api/generateSuggestions', action: axios.post, user: tokens.tokenUser, body: {inputLang: "English", outputLang: "Spanish", conversation: "Would you like to go to dinner tonight?"}},
         {route: 'api/translateString', action: axios.post, user: tokens.tokenUser, body: {text: "lets learn to code computer games", targetLang: 'es-MX'}},
     ]
-    //axios.get(`${host}/api/generateVocab`, {headers: {auth: tokens.tokenUser}}).then(({data}) => console.log(data)) //.then((response) => console.log(200 === response.status ? '🟩' : '🟥')).catch(() => console.log('🟥'))
+    
     reqObjects.forEach(async ({action, route, user, body}) => {
         if (action === axios.post){
             action(`${host}/${route}`, body, {headers: {auth: user}})
-                .then((response) => console.log(`🟩 ${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data)}`))
-                .catch((err) => console.log(`🟥  ${route},  ${err.code} ${err.message}`))
+                .then((response) => console.log(`🟩 /${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data)}`))
+                .catch((err) => console.log(`🟥  /${route},  ${err.code} ${err.message}`))
         } else if (action === axios.get){
             action(`${host}/${route}`, {headers: {auth: user}})
-                .then((response) => console.log(`🟩 ${route}, ${response.data}`))
-                .catch((err) => console.log(`🟥 ${route},  ${err.code} ${err.message}`))
+                .then((response) => console.log(`🟩 /${route}, ${JSON.stringify(response.data).slice(0,49)}`))
+                .catch((err) => console.log(`🟥 /${route},  ${err.code} ${err.message}`))
         }
     })
 }
