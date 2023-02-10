@@ -2,14 +2,14 @@ const { io } = require('socket.io-client');
 const fs = require("fs")
 const getAllTokens = require("./getTokens.spec")
 
-
+const host = process.env.MODE === 'DEV' ?  process.env.LOCAL_URL : process.env.LIVE_URL 
 
 const m4aReq = async (detailLog=false, socketName="") => {
     return new Promise(async (resolve, reject) => {
         let result = {src: null, tgt: null}
         const socketLabel = socketName === "" ? String(Math.random()*10000).slice(0,4) : socketName
         const tokens = await getAllTokens()
-        const socket = io("http://127.0.0.1:3000/audio", {auth: {token: tokens.tokenUser}}); 
+        const socket = io(`${host}/audio`, {auth: {token: tokens.tokenUser}}); 
         socket.on("connect", () => {
             console.log(`skt:${socketLabel} is connected to the server`)
             
