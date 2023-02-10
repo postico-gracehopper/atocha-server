@@ -30,7 +30,7 @@ router.get('/', async (req, res, next) => {
     res.json(result)
   } catch(err){
     err.status = 500
-    err.message = "could node get docker details"
+    err.message = "could not get docker details"
     next(err)
   }
   })
