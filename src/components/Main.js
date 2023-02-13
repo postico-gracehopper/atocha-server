@@ -57,7 +57,7 @@ const Main = () => {
         <div style={{backgroundColor: colors.primary, width: '100%', height: '60vh', display: 'flex'}}>
             <div style={{flex: 1}}></div>
             <div style={{flex: 1, padding: '10%', color: 'white', fontSize: width/60, textAlign: 'center'}}>
-                Speak into the microphone to recieve an instant translation in one of nine Languages! 
+                Speak into the microphone to recieve an instant translation in one of nine Languages: 
             <div style={{textAlign: 'left', marginLeft: '30%'}}>
                 <br></br>
                 🇬🇧 English<br></br>
@@ -71,6 +71,14 @@ const Main = () => {
                 🇹🇭 Thai<br></br>   
             </div>
             </div>
+        </div>
+        <div style={{backgroundColor: colors.primary, width: '100%', height: '60vh', display: 'flex', alignItems: 'center'}}>
+            <p style={{color: 'white', fontSize: width/60, textAlign: 'center', padding: '10%'}}>
+                Atocha supports instant translation via speech or text, 
+                teacher explanations, suggested responses, broadening vocabulary, 
+                and a histoy + phrasebook you can keep coming back to. 
+                Take your first step on your next adventure today!
+            </p>
         </div>
     </div>
             // <div>
