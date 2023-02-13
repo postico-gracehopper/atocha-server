@@ -11,13 +11,8 @@ router.post("/", async (req, res, next) => {
   const text = req.body.text;
 
   try {
-    //   Translates the text into the target language. "text" can be a string for
-    // translating a single piece of text, or an array of strings for translating
-    // multiple texts.
-    console.log("In the try block");
-    console.log("target is", target);
+    if (!text || !target) throw new Error("arguments")
     let [translations] = await translate.translate(text, target);
-    console.log("translations arrre", translations, " and text is", text);
     translations = Array.isArray(translations) ? translations : [translations];
     let rez = [];
     translations.forEach((translation) => {
@@ -26,10 +21,13 @@ router.post("/", async (req, res, next) => {
       }
     });
     res.status(200).send(rez);
-  } catch (err) {
-    err.status = 500
-    err.message = "API with google text translate failed"
-    next(err)
+  } catch (error) {
+    if (error.message === "arguments"){
+      error.status = 400
+      error.message = "must include text and targetLang in the request body"
+    }
+    console.error(error)
+    next(error)
     // if (error.response) {
     //   console.error(error.response, error.reponse.statusCode)
     //   console.error(error.response.status, error.response.data);

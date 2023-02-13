@@ -21,6 +21,7 @@ router.post('/', async (req, res, next) => {
   const outputLang = req.body.outputLang;
   const conversation = req.body.conversation;
 
+
   function generateSuggestions(inputLang, outputLang, conversation) {
     return `I'm having a conversation with someone in ${inputLang} and ${outputLang}. Suggest three natural, chatty responses to the prompt. The first should be positive. The second should also be positive, but tease the asker or make a joke. The third should respond negatively but stay warm and polite. All three should be brief. 
     The ideas should include both ${inputLang} and ${outputLang}. The answer should be formatted like this. Do not include a leading number: <${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>%<${inputLang} text>;<${outputLang} text>
@@ -28,6 +29,7 @@ router.post('/', async (req, res, next) => {
   }
 
   try {
+    if (!inputLang || !outputLang || !conversation) throw new Error("arguments")
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt: generateSuggestions(inputLang, outputLang, conversation),
@@ -36,18 +38,25 @@ router.post('/', async (req, res, next) => {
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
-    if (error.response) {
-      console.error(error.response.status, error.response.data);
-      res.status(error.response.status).json(error.response.data);
+    if (error.message === "arguments"){
+      error.status = 400
+      error.message = "must include an inputLang, outputLang, & converstion in the request body"
     } else {
-      console.log('Input lang is', inputLang);
-      console.error(`Error with OpenAI API request: ${error.message}`);
-      res.status(500).json({
-        error: {
-          message: 'An error occurred during your request.',
-        },
-      });
+      console.log(error)
     }
+    next(error)
+    // if (error.response) {
+    //   console.error(error.response.status, error.response.data);
+    //   res.status(error.response.status).json(error.response.data);
+    // } else {
+    //   console.log('Input lang is', inputLang);
+    //   console.error(`Error with OpenAI API request: ${error.message}`);
+    //   res.status(500).json({
+    //     error: {
+    //       message: 'An error occurred during your request.',
+    //     },
+    //   });
+    // }
   }
 });
 

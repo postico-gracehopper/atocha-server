@@ -1,7 +1,7 @@
 const { io } = require('socket.io-client');
 const getAllTokens = require("./getTokens.spec")
 
-
+const host = process.env.MODE === 'DEV' ?  process.env.LOCAL_URL : process.env.LIVE_URL 
 
 
 async function probeSocketAPIRoutes(){
@@ -14,9 +14,9 @@ async function probeSocketAPIRoutes(){
 
     const extensions = ['', 'audio', 'text']
     const endpoints = [
-        'http://localhost:3000/',
-        'http://localhost:3000/audio',
-        'http://localhost:3000/text'
+        `${host}/`,
+        `${host}/audio`,
+        `${host}/text`,
       ]
       
     console.log("probeSocketAPIRoutes: 3x endpoints (/, /text, /audio) and 4x tokens (none, bad, user, admin)")

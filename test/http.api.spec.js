@@ -1,11 +1,11 @@
 const axios = require("axios")
 const getAllTokens = require("./getTokens.spec")
 require("dotenv").config()
+const host = process.env.MODE === 'DEV' ?  process.env.LOCAL_URL : process.env.LIVE_URL 
 
 
 async function probeAPIRoutes(){
     const tokens = await getAllTokens()
-    const host = process.env.MODE === 'prod' ?  process.env.DEPLOYED_URL : "http://localhost:3000"
     let reqObjects = [
         {route: '', action: axios.get, user: tokens.tokenBad },
         {route: 'api/checkDocker', action: axios.get, user: tokens.tokenUser },
@@ -16,14 +16,15 @@ async function probeAPIRoutes(){
     ]
     
     reqObjects.forEach(async ({action, route, user, body}) => {
+        console.log(`${host}/${route}`)
         if (action === axios.post){
             action(`${host}/${route}`, body, {headers: {auth: user}})
-                .then((response) => console.log(`   🟩 user /${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data)}`))
-                .catch((err) => console.log(`   🟥 user /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .then((response) => console.log(`   🟩 user /${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data.slice(5,50))}`))
+                .catch((err) => console.log(`   🟥 user /${route},  ${err.code} ${err.message}`))
         } else if (action === axios.get){
             action(`${host}/${route}`, {headers: {auth: user}})
                 .then((response) => console.log(`   🟩 user /${route}, ${JSON.stringify(response.data).slice(0,49)}`))
-                .catch((err) => console.log(`   🟥 user /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .catch((err) => console.log(`   🟥 user /${route},  ${err.code} ${err.message}`))
         }
     })
 
@@ -37,15 +38,15 @@ async function probeAPIRoutes(){
         if (action === axios.post){
             action(`${host}/${route}`, body, {headers: {auth: user}})
                 .then((response) => console.log(`   🟥 nonuser /${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data)}`))
-                .catch((err) => console.log(`   🟩 nonuser /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .catch((err) => console.log(`   🟩 nonuser /${route},  ${err.code} ${err.message}`))
         } else if (action === axios.get && route === 'api/checkDocker'){
             action(`${host}/${route}`, {headers: {auth: user}})
                 .then((response) => console.log(`   🟥 nonuser /${route}, ${JSON.stringify(response.data).slice(0,49)}`))
-                .catch((err) => console.log(`   🟩 nonuser /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .catch((err) => console.log(`   🟩 nonuser /${route},  ${err.code} ${err.message}`))
         } else if (action === axios.get && route === ''){
             action(`${host}/${route}`, {headers: {auth: user}})
                 .then((response) => console.log(`   🟩 nonuser /${route}, ${JSON.stringify(response.data).slice(0,49)}`))
-                .catch((err) => console.log(`   🟥 nonuser /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .catch((err) => console.log(`   🟥 nonuser /${route},  ${err.code} ${err.message}`))
         }
     })
 
@@ -54,12 +55,12 @@ async function probeAPIRoutes(){
         body = {}
         if (action === axios.post){
             action(`${host}/${route}`, body, {headers: {auth: user}})
-                .then((response) => console.log(`   🟩 user /${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data)}`))
-                .catch((err) => console.log(`   🟥 user /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .then((response) => console.log(`   🟥 user+noBody user /${route}, ${response.data.result ? response.data.result : JSON.stringify(response.data)}`))
+                .catch((err) => console.log(`   🟩 user+noBody /${route},  ${err.code} ${err.message} ${err.response.data || err.response.result}`))
         } else if (action === axios.get){
             action(`${host}/${route}`, {headers: {auth: user}})
-                .then((response) => console.log(`   🟩 user /${route}, ${JSON.stringify(response.data).slice(0,49)}`))
-                .catch((err) => console.log(`   🟥 user /${route},  ${err.code} ${err.message} ${err.response.data}`))
+                .then((response) => console.log(`   🟩 user+noBody /${route}, ${JSON.stringify(response.data).slice(0,49)}`))
+                .catch((err) => console.log(`   🟥 user+noBody /${route},  ${err.code} ${err.message} ${err.response.data}`))
         }
     })
 
