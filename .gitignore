@@ -19,7 +19,7 @@ localIgnore
 temp_audio.m4a
 decoded_audio.flac
 
-public
+
 *bundle.js
 *bundle.js.map
 
